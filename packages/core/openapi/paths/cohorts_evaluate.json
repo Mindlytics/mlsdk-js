@@ -1,0 +1,106 @@
+{
+  "get": {
+    "tags": [
+      "Cohorts"
+    ],
+    "summary": "Evaluate cohort",
+    "description": "Evaluate cohort, get a list of users in the cohort",
+    "parameters": [
+      {
+        "in": "query",
+        "name": "cohort_id",
+        "description": "Cohort id",
+        "schema": {
+          "type": "string",
+          "description": "Cohort id"
+        },
+        "required": true
+      },
+      {
+        "in": "query",
+        "name": "skip",
+        "description": "Number of users to skip",
+        "schema": {
+          "type": "number",
+          "description": "Number of users to skip"
+        }
+      },
+      {
+        "in": "query",
+        "name": "limit",
+        "description": "Number of users to return",
+        "schema": {
+          "type": "number",
+          "description": "Number of users to return"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Cohort evaluated",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "organization_id": {
+                    "type": "string"
+                  },
+                  "app_id": {
+                    "type": "string"
+                  },
+                  "user_id": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  },
+                  "aliases": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "created_at": {
+                    "type": "string"
+                  },
+                  "traits": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "organization_id",
+                  "app_id",
+                  "user_id",
+                  "id",
+                  "aliases",
+                  "created_at",
+                  "traits"
+                ]
+              },
+              "description": "List of users in the cohort"
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Cohort not found"
+      }
+    }
+  }
+}

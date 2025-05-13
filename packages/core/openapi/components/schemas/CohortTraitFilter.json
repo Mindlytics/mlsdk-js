@@ -1,0 +1,124 @@
+{
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "trait"
+      ]
+    },
+    "with": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "property_name": {
+            "type": "string",
+            "description": "The name of the property whose values are being filtered.  This is typically a trait or event property."
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              "eq",
+              "neq",
+              "in",
+              "nin",
+              "case_insensitive_eq",
+              "case_insensitive_neq",
+              "regex",
+              "not_regex",
+              "between",
+              "gt",
+              "gte",
+              "lt",
+              "lte"
+            ],
+            "description": "The comparison operator to use when filtering the property values.  If not specified, the default is \"eq\".",
+            "example": "eq"
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            },
+            "description": "The values to filter the property by.  This can be an array of one, in which case all operators are supported, or an array of multiple values, in which case only \"in\" and \"nin\" are supported."
+          }
+        },
+        "required": [
+          "property_name",
+          "values"
+        ]
+      },
+      "description": "If specified, the trait must have the trait/values specified."
+    },
+    "within": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "string",
+          "description": "The start of the time range as an ISO date string",
+          "example": "2021-01-01T00:00:00Z"
+        },
+        "end": {
+          "type": "string",
+          "description": "The end of the time range as an ISO date string",
+          "example": "2021-01-02T00:00:00Z"
+        },
+        "period": {
+          "type": "object",
+          "properties": {
+            "number": {
+              "type": "number",
+              "description": "The number of time units",
+              "example": 1
+            },
+            "unit": {
+              "type": "string",
+              "enum": [
+                "day",
+                "week",
+                "month"
+              ],
+              "description": "The time unit",
+              "example": "day"
+            },
+            "tz": {
+              "type": "string",
+              "description": "The timezone",
+              "example": "America/New_York"
+            }
+          },
+          "required": [
+            "number",
+            "unit",
+            "tz"
+          ],
+          "description": "The period of time to use when filtering the data.  If specified, overrides start and end.  This is typically used for events.",
+          "example": {
+            "number": 1,
+            "unit": "day",
+            "tz": "America/New_York"
+          }
+        }
+      },
+      "description": "If specified, the trait must have occurred within this time range.",
+      "example": {
+        "start": "2021-01-01T00:00:00Z",
+        "end": "2021-01-02T00:00:00Z"
+      }
+    }
+  },
+  "required": [
+    "type"
+  ]
+}

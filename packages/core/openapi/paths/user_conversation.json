@@ -1,0 +1,79 @@
+{
+  "get": {
+    "tags": [
+      "User"
+    ],
+    "summary": "Get user conversation",
+    "description": "Get user conversation",
+    "parameters": [
+      {
+        "in": "query",
+        "name": "conversation_id",
+        "description": "Conversation ID to fetch messages from",
+        "schema": {
+          "type": "string",
+          "description": "Conversation ID to fetch messages from"
+        },
+        "required": true
+      },
+      {
+        "in": "query",
+        "name": "user_id",
+        "description": "User database ID",
+        "schema": {
+          "type": "string",
+          "description": "User database ID"
+        },
+        "required": true
+      },
+      {
+        "in": "query",
+        "name": "limit",
+        "description": "Limit the number of results to return.  Default is 100000",
+        "schema": {
+          "type": "number",
+          "description": "Limit the number of results to return.  Default is 100000"
+        }
+      },
+      {
+        "in": "query",
+        "name": "offset",
+        "description": "Offset the results by this number.  Default is 0",
+        "schema": {
+          "type": "number",
+          "description": "Offset the results by this number.  Default is 0"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "User conversation",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "user": {
+                    "type": "string",
+                    "description": "User message content"
+                  },
+                  "assistant": {
+                    "type": "string",
+                    "description": "Assistant message content"
+                  }
+                },
+                "required": [
+                  "user",
+                  "assistant"
+                ]
+              },
+              "description": "List of user/assistent turns"
+            }
+          }
+        }
+      }
+    }
+  }
+}

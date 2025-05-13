@@ -1,0 +1,222 @@
+{
+  "get": {
+    "tags": [
+      "Summary"
+    ],
+    "summary": "Get Engagement",
+    "description": "Get a summary of user engagement within a given time range",
+    "parameters": [
+      {
+        "in": "query",
+        "name": "range",
+        "description": "Time range for the summary",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "string",
+              "description": "The start of the range as an ISO date string",
+              "example": "2021-01-01T00:00:00Z"
+            },
+            "end": {
+              "type": "string",
+              "description": "The end of the range as an ISO date string",
+              "example": "2021-01-02T00:00:00Z"
+            },
+            "period": {
+              "type": "string",
+              "enum": [
+                "day",
+                "week",
+                "month"
+              ],
+              "description": "The size of the bins, or points, in a chart",
+              "example": "day"
+            },
+            "tz": {
+              "type": "string",
+              "description": "The browser's timezone",
+              "example": "America/New_York"
+            }
+          },
+          "required": [
+            "start",
+            "end",
+            "period",
+            "tz"
+          ],
+          "description": "Time range for the summary",
+          "example": {
+            "start": "2023-01-01T00:00:00.000Z",
+            "end": "2023-01-31T23:59:59.000Z",
+            "period": "day",
+            "tz": "UTC"
+          }
+        },
+        "required": true
+      },
+      {
+        "in": "query",
+        "name": "session_id",
+        "description": "Scope rerult to this session id.",
+        "schema": {
+          "type": "string",
+          "description": "Scope rerult to this session id."
+        }
+      },
+      {
+        "in": "query",
+        "name": "conversation_id",
+        "description": "Scope result to this conversation id.",
+        "schema": {
+          "type": "string",
+          "description": "Scope result to this conversation id."
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "User engagement Chart.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "chart_name": {
+                  "type": "string",
+                  "description": "The name of the chart"
+                },
+                "points": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "start": {
+                        "type": "string",
+                        "description": "Start timestamp of the point"
+                      },
+                      "end": {
+                        "type": "string",
+                        "description": "End timestamp of the point"
+                      },
+                      "user_count": {
+                        "type": "number",
+                        "description": "Active users during this period"
+                      },
+                      "new_user_count": {
+                        "type": "number",
+                        "description": "New users during this period"
+                      },
+                      "conversation_count": {
+                        "type": "number",
+                        "description": "The number of conversations in this period"
+                      },
+                      "intent_count": {
+                        "type": "number",
+                        "description": "The number of intents in this period"
+                      }
+                    },
+                    "required": [
+                      "start",
+                      "end",
+                      "user_count",
+                      "new_user_count",
+                      "conversation_count",
+                      "intent_count"
+                    ]
+                  },
+                  "description": "The points of the chart"
+                },
+                "highlights": {
+                  "type": "object",
+                  "properties": {
+                    "total_user_count": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "description": "The total number of users"
+                        },
+                        "delta_percent": {
+                          "type": "number",
+                          "description": "The percentage change in the total number of users"
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "delta_percent"
+                      ]
+                    },
+                    "total_new_user_count": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "description": "The total number of new users"
+                        },
+                        "delta_percent": {
+                          "type": "number",
+                          "description": "The percentage change in the total number of new users"
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "delta_percent"
+                      ]
+                    },
+                    "total_conversation_count": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "description": "The total number of conversations"
+                        },
+                        "delta_percent": {
+                          "type": "number",
+                          "description": "The percentage change in the total number of conversations"
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "delta_percent"
+                      ]
+                    },
+                    "total_intent_count": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "description": "The total number of intents"
+                        },
+                        "delta_percent": {
+                          "type": "number",
+                          "description": "The percentage change in the total number of intents"
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "delta_percent"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "total_user_count",
+                    "total_new_user_count",
+                    "total_conversation_count",
+                    "total_intent_count"
+                  ],
+                  "description": "The highlights of the chart"
+                }
+              },
+              "required": [
+                "chart_name",
+                "points",
+                "highlights"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

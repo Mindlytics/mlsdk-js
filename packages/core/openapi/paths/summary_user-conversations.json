@@ -1,0 +1,214 @@
+{
+  "get": {
+    "tags": [
+      "Summary"
+    ],
+    "summary": "Get User Conversations",
+    "description": "Get a summary of user conversations within a given time range",
+    "parameters": [
+      {
+        "in": "query",
+        "name": "range",
+        "description": "Time range for the summary",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "string",
+              "description": "The start of the range as an ISO date string",
+              "example": "2021-01-01T00:00:00Z"
+            },
+            "end": {
+              "type": "string",
+              "description": "The end of the range as an ISO date string",
+              "example": "2021-01-02T00:00:00Z"
+            },
+            "period": {
+              "type": "string",
+              "enum": [
+                "day",
+                "week",
+                "month"
+              ],
+              "description": "The size of the bins, or points, in a chart",
+              "example": "day"
+            },
+            "tz": {
+              "type": "string",
+              "description": "The browser's timezone",
+              "example": "America/New_York"
+            }
+          },
+          "required": [
+            "start",
+            "end",
+            "period",
+            "tz"
+          ],
+          "description": "Time range for the summary",
+          "example": {
+            "start": "2023-01-01T00:00:00.000Z",
+            "end": "2023-01-31T23:59:59.000Z",
+            "period": "day",
+            "tz": "UTC"
+          }
+        },
+        "required": true
+      },
+      {
+        "in": "query",
+        "name": "session_id",
+        "description": "Scope rerult to this session id.",
+        "schema": {
+          "type": "string",
+          "description": "Scope rerult to this session id."
+        }
+      },
+      {
+        "in": "query",
+        "name": "conversation_id",
+        "description": "Scope result to this conversation id.",
+        "schema": {
+          "type": "string",
+          "description": "Scope result to this conversation id."
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "User Conversations Chart.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "chart_name": {
+                  "type": "string",
+                  "description": "The name of the chart"
+                },
+                "points": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "start": {
+                        "type": "string",
+                        "description": "Start timestamp of the point"
+                      },
+                      "end": {
+                        "type": "string",
+                        "description": "End timestamp of the point"
+                      },
+                      "user_count": {
+                        "type": "number",
+                        "description": "The number of users who have had a conversation in the given range"
+                      },
+                      "unique_user_count": {
+                        "type": "number",
+                        "description": "The number of unique users who have had a conversation in the given range"
+                      },
+                      "conversation_count": {
+                        "type": "number",
+                        "description": "The number of conversations in the given range"
+                      },
+                      "average_duration": {
+                        "type": "number",
+                        "description": "The average duration of the conversations in milliseconds"
+                      },
+                      "average_prompt_count": {
+                        "type": "number",
+                        "description": "The average number of prompts in the conversations"
+                      },
+                      "average_intents_per_conversation": {
+                        "type": "number",
+                        "description": "The average number of intents per conversation"
+                      }
+                    },
+                    "required": [
+                      "start",
+                      "end",
+                      "user_count",
+                      "unique_user_count",
+                      "conversation_count",
+                      "average_duration",
+                      "average_prompt_count",
+                      "average_intents_per_conversation"
+                    ]
+                  },
+                  "description": "The points of the chart"
+                },
+                "highlights": {
+                  "type": "object",
+                  "properties": {
+                    "average_duration": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "description": "The average duration of the conversations in milliseconds"
+                        },
+                        "delta_percent": {
+                          "type": "number",
+                          "description": "The percent change from the previous period."
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "delta_percent"
+                      ]
+                    },
+                    "average_prompt_count": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "description": "The average number of prompts in the conversations"
+                        },
+                        "delta_percent": {
+                          "type": "number",
+                          "description": "The percent change from the previous period."
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "delta_percent"
+                      ]
+                    },
+                    "average_intents_per_conversation": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "number",
+                          "description": "The average number of intents per conversation"
+                        },
+                        "delta_percent": {
+                          "type": "number",
+                          "description": "The percent change from the previous period."
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "delta_percent"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "average_duration",
+                    "average_prompt_count",
+                    "average_intents_per_conversation"
+                  ],
+                  "description": "The highlights of the chart"
+                }
+              },
+              "required": [
+                "chart_name",
+                "points",
+                "highlights"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

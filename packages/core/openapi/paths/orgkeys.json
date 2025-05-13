@@ -1,0 +1,174 @@
+{
+  "get": {
+    "tags": [
+      "Organization Keys"
+    ],
+    "summary": "List organization keys",
+    "description": "List all organization keys for an organization.",
+    "responses": {
+      "200": {
+        "description": "List of organization keys",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "organization_id": {
+                    "type": "string",
+                    "title": "Organization ID"
+                  },
+                  "apikey": {
+                    "type": "string",
+                    "title": "API Key"
+                  }
+                },
+                "required": [
+                  "organization_id",
+                  "apikey"
+                ],
+                "title": "API Key, Organization ID association"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "post": {
+    "tags": [
+      "Organization Keys"
+    ],
+    "summary": "Create organization key",
+    "description": "Create an api key for an orgaization.  The POST method takes an organization_id from the request body, and then creates a new api key and associates it with the organization.  The Authorization header can be the super admin key, or another valid organization api key.  When creating the very first api key for an organization, the Authorization header would have to be the super admin key.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "organization_id": {
+                "type": "string",
+                "title": "Organization ID"
+              }
+            },
+            "required": [
+              "organization_id"
+            ]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Created organization key",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "organization_id": {
+                  "type": "string",
+                  "title": "Organization ID"
+                },
+                "apikey": {
+                  "type": "string",
+                  "title": "API Key"
+                }
+              },
+              "required": [
+                "organization_id",
+                "apikey"
+              ],
+              "title": "API Key, Organization ID association"
+            }
+          }
+        }
+      }
+    }
+  },
+  "put": {
+    "tags": [
+      "Organization Keys"
+    ],
+    "summary": "Associate organization key",
+    "description": "Associate an organization api key with an organization.  The PUT method takes both api key and organization_id from the request body.  The Authorization header can be the super admin key, or another valid organization api key.  When creating the very first api key for an organization,  the Authorization header would have to be the super admin key.",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "organization_id": {
+                "type": "string",
+                "title": "Organization ID"
+              },
+              "apikey": {
+                "type": "string",
+                "title": "API key"
+              }
+            },
+            "required": [
+              "organization_id",
+              "apikey"
+            ]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Associated organization key",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "organization_id": {
+                  "type": "string",
+                  "title": "Organization ID"
+                },
+                "apikey": {
+                  "type": "string",
+                  "title": "API Key"
+                }
+              },
+              "required": [
+                "organization_id",
+                "apikey"
+              ],
+              "title": "API Key, Organization ID association"
+            }
+          }
+        }
+      }
+    }
+  },
+  "delete": {
+    "tags": [
+      "Organization Keys"
+    ],
+    "summary": "Delete organization key",
+    "description": "Delete an organization api key.  The Authorization header can contain another valid api key for this organization, or can contain the api key being deleted, or the super admin key.",
+    "parameters": [
+      {
+        "name": "apikey",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "title": "API Key",
+          "description": "The API key to delete.  If not provided, all keys are deleted."
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Delete an organization api key"
+      }
+    }
+  }
+}

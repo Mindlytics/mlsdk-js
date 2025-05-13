@@ -1,0 +1,732 @@
+{
+  "get": {
+    "tags": [
+      "Charts"
+    ],
+    "summary": "Get a Intent Distribution Chart",
+    "description": "Get a Intent Distribution Chart",
+    "parameters": [
+      {
+        "name": "organization_id",
+        "in": "query",
+        "description": "organization_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "app_id",
+        "in": "query",
+        "description": "app_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "session_id",
+        "in": "query",
+        "description": "session_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "conversation_id",
+        "in": "query",
+        "description": "conversation_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "chartControls",
+        "in": "query",
+        "description": "Chart Controls",
+        "required": true,
+        "schema": {
+          "type": "object",
+          "properties": {
+            "range": {
+              "type": "object",
+              "properties": {
+                "start": {
+                  "type": "string",
+                  "description": "The start of the range as an ISO date string",
+                  "example": "2021-01-01T00:00:00Z"
+                },
+                "end": {
+                  "type": "string",
+                  "description": "The end of the range as an ISO date string",
+                  "example": "2021-01-02T00:00:00Z"
+                },
+                "period": {
+                  "type": "string",
+                  "enum": [
+                    "day",
+                    "week",
+                    "month"
+                  ],
+                  "description": "The size of the bins, or points, in a chart",
+                  "example": "day"
+                },
+                "tz": {
+                  "type": "string",
+                  "description": "The browser's timezone",
+                  "example": "America/New_York"
+                }
+              },
+              "required": [
+                "start",
+                "end",
+                "period",
+                "tz"
+              ],
+              "description": "Time range for the chart.",
+              "example": {
+                "start": "2021-01-01T00:00:00Z",
+                "end": "2021-01-02T00:00:00Z",
+                "period": "day",
+                "tz": "America/New_York"
+              }
+            },
+            "userFilters": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "cohort": {
+                    "type": "string",
+                    "description": "The name of the cohort.  Can be \"All Users\" to match any user."
+                  },
+                  "with": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "property_name": {
+                          "type": "string",
+                          "description": "The name of the property whose values are being filtered.  This is typically a trait or event property."
+                        },
+                        "operator": {
+                          "type": "string",
+                          "enum": [
+                            "eq",
+                            "neq",
+                            "in",
+                            "nin",
+                            "case_insensitive_eq",
+                            "case_insensitive_neq",
+                            "regex",
+                            "not_regex",
+                            "between",
+                            "gt",
+                            "gte",
+                            "lt",
+                            "lte"
+                          ],
+                          "description": "The comparison operator to use when filtering the property values.  If not specified, the default is \"eq\".",
+                          "example": "eq"
+                        },
+                        "values": {
+                          "type": "array",
+                          "items": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "number"
+                              },
+                              {
+                                "type": "boolean"
+                              }
+                            ]
+                          },
+                          "description": "The values to filter the property by.  This can be an array of one, in which case all operators are supported, or an array of multiple values, in which case only \"in\" and \"nin\" are supported."
+                        }
+                      },
+                      "required": [
+                        "property_name",
+                        "values"
+                      ]
+                    },
+                    "description": "If specified, the user must have the trait/values specified."
+                  },
+                  "shown_intents": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "intent": {
+                          "type": "string",
+                          "description": "The name of the intent.  Can be \"Any Intent\" to match any intent."
+                        },
+                        "with": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "property_name": {
+                                "type": "string",
+                                "description": "The name of the property whose values are being filtered.  This is typically a trait or event property."
+                              },
+                              "operator": {
+                                "type": "string",
+                                "enum": [
+                                  "eq",
+                                  "neq",
+                                  "in",
+                                  "nin",
+                                  "case_insensitive_eq",
+                                  "case_insensitive_neq",
+                                  "regex",
+                                  "not_regex",
+                                  "between",
+                                  "gt",
+                                  "gte",
+                                  "lt",
+                                  "lte"
+                                ],
+                                "description": "The comparison operator to use when filtering the property values.  If not specified, the default is \"eq\".",
+                                "example": "eq"
+                              },
+                              "values": {
+                                "type": "array",
+                                "items": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "boolean"
+                                    }
+                                  ]
+                                },
+                                "description": "The values to filter the property by.  This can be an array of one, in which case all operators are supported, or an array of multiple values, in which case only \"in\" and \"nin\" are supported."
+                              }
+                            },
+                            "required": [
+                              "property_name",
+                              "values"
+                            ]
+                          },
+                          "description": "If specified, the intent must have the attribute/values specified."
+                        },
+                        "within": {
+                          "type": "object",
+                          "properties": {
+                            "start": {
+                              "type": "string",
+                              "description": "The start of the time range as an ISO date string",
+                              "example": "2021-01-01T00:00:00Z"
+                            },
+                            "end": {
+                              "type": "string",
+                              "description": "The end of the time range as an ISO date string",
+                              "example": "2021-01-02T00:00:00Z"
+                            },
+                            "period": {
+                              "type": "object",
+                              "properties": {
+                                "number": {
+                                  "type": "number",
+                                  "description": "The number of time units",
+                                  "example": 1
+                                },
+                                "unit": {
+                                  "type": "string",
+                                  "enum": [
+                                    "day",
+                                    "week",
+                                    "month"
+                                  ],
+                                  "description": "The time unit",
+                                  "example": "day"
+                                },
+                                "tz": {
+                                  "type": "string",
+                                  "description": "The timezone",
+                                  "example": "America/New_York"
+                                }
+                              },
+                              "required": [
+                                "number",
+                                "unit",
+                                "tz"
+                              ],
+                              "description": "The period of time to use when filtering the data.  If specified, overrides start and end.  This is typically used for events.",
+                              "example": {
+                                "number": 1,
+                                "unit": "day",
+                                "tz": "America/New_York"
+                              }
+                            }
+                          },
+                          "description": "If specified, the intent must have occurred within this time range.",
+                          "example": {
+                            "start": "2021-01-01T00:00:00Z",
+                            "end": "2021-01-02T00:00:00Z"
+                          }
+                        },
+                        "number_of": {
+                          "type": "number",
+                          "description": "If specified, the number of intents of this type that must have occurred within the time range. The default is 1."
+                        },
+                        "number_of_operator": {
+                          "type": "string",
+                          "enum": [
+                            "eq",
+                            "gt",
+                            "gte",
+                            "lt",
+                            "lte"
+                          ],
+                          "description": "If specified, the operator to use when filtering the number of events.  The default is \"gte\"."
+                        },
+                        "combine_previous_operation": {
+                          "type": "string",
+                          "enum": [
+                            "and",
+                            "or",
+                            "then"
+                          ],
+                          "description": "If specified, the operation to use when combining any previous intent filters.  Defaults to \"and\"."
+                        }
+                      },
+                      "required": [
+                        "intent"
+                      ],
+                      "description": "A filter for intents that the user has expressed",
+                      "example": {
+                        "intent": "intent_name",
+                        "with": [
+                          {
+                            "property_name": "attribute_name",
+                            "operator": "eq",
+                            "values": [
+                              "attribute_value"
+                            ]
+                          }
+                        ],
+                        "within": {
+                          "start": "2021-01-01T00:00:00Z",
+                          "end": "2021-01-02T00:00:00Z"
+                        }
+                      }
+                    },
+                    "description": "If specified, the user must have expressed the intents."
+                  },
+                  "performed_events": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "event_name": {
+                          "type": "string",
+                          "description": "The name of the event.  Can be \"Any Event\" to match any event."
+                        },
+                        "with": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "property_name": {
+                                "type": "string",
+                                "description": "The name of the property whose values are being filtered.  This is typically a trait or event property."
+                              },
+                              "operator": {
+                                "type": "string",
+                                "enum": [
+                                  "eq",
+                                  "neq",
+                                  "in",
+                                  "nin",
+                                  "case_insensitive_eq",
+                                  "case_insensitive_neq",
+                                  "regex",
+                                  "not_regex",
+                                  "between",
+                                  "gt",
+                                  "gte",
+                                  "lt",
+                                  "lte"
+                                ],
+                                "description": "The comparison operator to use when filtering the property values.  If not specified, the default is \"eq\".",
+                                "example": "eq"
+                              },
+                              "values": {
+                                "type": "array",
+                                "items": {
+                                  "anyOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "boolean"
+                                    }
+                                  ]
+                                },
+                                "description": "The values to filter the property by.  This can be an array of one, in which case all operators are supported, or an array of multiple values, in which case only \"in\" and \"nin\" are supported."
+                              }
+                            },
+                            "required": [
+                              "property_name",
+                              "values"
+                            ]
+                          },
+                          "description": "If specified the event must have all the property/values specified.  User traits on the event are also valid."
+                        },
+                        "within": {
+                          "type": "object",
+                          "properties": {
+                            "start": {
+                              "type": "string",
+                              "description": "The start of the time range as an ISO date string",
+                              "example": "2021-01-01T00:00:00Z"
+                            },
+                            "end": {
+                              "type": "string",
+                              "description": "The end of the time range as an ISO date string",
+                              "example": "2021-01-02T00:00:00Z"
+                            },
+                            "period": {
+                              "type": "object",
+                              "properties": {
+                                "number": {
+                                  "type": "number",
+                                  "description": "The number of time units",
+                                  "example": 1
+                                },
+                                "unit": {
+                                  "type": "string",
+                                  "enum": [
+                                    "day",
+                                    "week",
+                                    "month"
+                                  ],
+                                  "description": "The time unit",
+                                  "example": "day"
+                                },
+                                "tz": {
+                                  "type": "string",
+                                  "description": "The timezone",
+                                  "example": "America/New_York"
+                                }
+                              },
+                              "required": [
+                                "number",
+                                "unit",
+                                "tz"
+                              ],
+                              "description": "The period of time to use when filtering the data.  If specified, overrides start and end.  This is typically used for events.",
+                              "example": {
+                                "number": 1,
+                                "unit": "day",
+                                "tz": "America/New_York"
+                              }
+                            }
+                          },
+                          "description": "If specified, the event must have occurred within this time range.",
+                          "example": {
+                            "start": "2021-01-01T00:00:00Z",
+                            "end": "2021-01-02T00:00:00Z"
+                          }
+                        },
+                        "groupBy": {
+                          "type": "object",
+                          "properties": {
+                            "property_name": {
+                              "type": "string"
+                            },
+                            "property_values": {
+                              "type": "array",
+                              "items": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "number"
+                                  },
+                                  {
+                                    "type": "boolean"
+                                  }
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "property_name",
+                            "property_values"
+                          ],
+                          "description": "If specified, the events will be grouped by this property for the values specified."
+                        },
+                        "number_of": {
+                          "type": "number",
+                          "description": "If specified, the number of events of this type that must have occurred within the time range. The default is 1."
+                        },
+                        "number_of_operator": {
+                          "type": "string",
+                          "enum": [
+                            "eq",
+                            "gt",
+                            "gte",
+                            "lt",
+                            "lte"
+                          ],
+                          "description": "If specified, the operator to use when filtering the number of events.  The default is \"gte\"."
+                        },
+                        "combine_previous_operation": {
+                          "type": "string",
+                          "enum": [
+                            "and",
+                            "or",
+                            "then"
+                          ],
+                          "description": "If specified, the operation to use when combining any previous event filters.  Defaults to \"and\"."
+                        }
+                      },
+                      "required": [
+                        "event_name"
+                      ]
+                    },
+                    "description": "If specified, the user must have performed the events."
+                  },
+                  "combine_previous_operation": {
+                    "type": "string",
+                    "enum": [
+                      "and",
+                      "or"
+                    ],
+                    "description": "If specified, the operation to use when combining any previous user filters.  Defaults to \"or\"."
+                  }
+                },
+                "description": "A filter for selecting users",
+                "example": {
+                  "cohort": "cohort_name",
+                  "with": [
+                    {
+                      "property_name": "trait_name",
+                      "operator": "eq",
+                      "values": [
+                        "trait_value"
+                      ]
+                    }
+                  ],
+                  "shown_intents": [
+                    {
+                      "intent": "intent_name",
+                      "with": [
+                        {
+                          "property_name": "attribute_name",
+                          "operator": "eq",
+                          "values": [
+                            "attribute_value"
+                          ]
+                        }
+                      ],
+                      "within": {
+                        "start": "2021-01-01T00:00:00Z",
+                        "end": "2021-01-02T00:00:00Z"
+                      }
+                    }
+                  ],
+                  "performed_events": [
+                    {
+                      "event_name": "event_name",
+                      "within": {
+                        "start": "2021-01-01T00:00:00Z",
+                        "end": "2021-01-02T00:00:00Z"
+                      }
+                    }
+                  ]
+                }
+              },
+              "description": "User filters for the chart."
+            },
+            "groupBy": {
+              "type": "object",
+              "properties": {
+                "trait_name": {
+                  "type": "string"
+                },
+                "trait_values": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      }
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "trait_name"
+              ],
+              "description": "Group by user trait.",
+              "example": {
+                "trait_name": "gender",
+                "trait_values": [
+                  "male",
+                  "female"
+                ]
+              }
+            }
+          },
+          "required": [
+            "range"
+          ],
+          "description": "Get a distribution of intents for matching users",
+          "title": "IntentDistributionChartInput"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Successful response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "chart_name": {
+                  "type": "string",
+                  "description": "Name of the chart"
+                },
+                "groups": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "group": {
+                        "type": "string",
+                        "description": "Group name"
+                      },
+                      "slices": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "label": {
+                              "type": "string",
+                              "description": "Label for the slice"
+                            },
+                            "value": {
+                              "type": "number",
+                              "description": "Value for the slice"
+                            },
+                            "percent": {
+                              "type": "number",
+                              "description": "Percentage of the slice"
+                            },
+                            "drilldown_id": {
+                              "type": "string",
+                              "description": "Drilldown id for this slice"
+                            }
+                          },
+                          "required": [
+                            "label",
+                            "value",
+                            "percent"
+                          ],
+                          "description": "A slice of a pie chart"
+                        },
+                        "description": "Slices for the group"
+                      }
+                    },
+                    "required": [
+                      "group",
+                      "slices"
+                    ]
+                  },
+                  "description": "Groups of pie charts, if group by was used."
+                },
+                "slices": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "label": {
+                        "type": "string",
+                        "description": "Label for the slice"
+                      },
+                      "value": {
+                        "type": "number",
+                        "description": "Value for the slice"
+                      },
+                      "percent": {
+                        "type": "number",
+                        "description": "Percentage of the slice"
+                      },
+                      "drilldown_id": {
+                        "type": "string",
+                        "description": "Drilldown id for this slice"
+                      }
+                    },
+                    "required": [
+                      "label",
+                      "value",
+                      "percent"
+                    ],
+                    "description": "A slice of a pie chart"
+                  },
+                  "description": "Slices of the pie chart, if no group by was used."
+                },
+                "highlights": {
+                  "type": "object",
+                  "properties": {
+                    "max_percent": {
+                      "type": "number",
+                      "description": "Maximum percentage of a pie slice"
+                    },
+                    "min_percent": {
+                      "type": "number",
+                      "description": "Minimum percentage of a pie slice"
+                    },
+                    "max_count": {
+                      "type": "number",
+                      "description": "Maximum count of a pie slice"
+                    },
+                    "min_count": {
+                      "type": "number",
+                      "description": "Minimum count of a pie slice"
+                    }
+                  },
+                  "required": [
+                    "max_percent",
+                    "min_percent",
+                    "max_count",
+                    "min_count"
+                  ],
+                  "description": "Highlights of the intent distribution chart, if not grouped."
+                }
+              },
+              "required": [
+                "chart_name"
+              ],
+              "description": "A distribution of intents for matching users",
+              "title": "IntentDistributionChartResult"
+            }
+          }
+        }
+      }
+    }
+  }
+}

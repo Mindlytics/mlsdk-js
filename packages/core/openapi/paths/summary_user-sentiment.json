@@ -1,0 +1,217 @@
+{
+  "get": {
+    "tags": [
+      "Summary"
+    ],
+    "summary": "Get User Sentiment",
+    "description": "Get a summary of user sentiment within a given time range",
+    "parameters": [
+      {
+        "in": "query",
+        "name": "range",
+        "description": "Time range for the summary",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "string",
+              "description": "The start of the range as an ISO date string",
+              "example": "2021-01-01T00:00:00Z"
+            },
+            "end": {
+              "type": "string",
+              "description": "The end of the range as an ISO date string",
+              "example": "2021-01-02T00:00:00Z"
+            },
+            "period": {
+              "type": "string",
+              "enum": [
+                "day",
+                "week",
+                "month"
+              ],
+              "description": "The size of the bins, or points, in a chart",
+              "example": "day"
+            },
+            "tz": {
+              "type": "string",
+              "description": "The browser's timezone",
+              "example": "America/New_York"
+            }
+          },
+          "required": [
+            "start",
+            "end",
+            "period",
+            "tz"
+          ],
+          "description": "Time range for the summary",
+          "example": {
+            "start": "2023-01-01T00:00:00.000Z",
+            "end": "2023-01-31T23:59:59.000Z",
+            "period": "day",
+            "tz": "UTC"
+          }
+        },
+        "required": true
+      },
+      {
+        "in": "query",
+        "name": "session_id",
+        "description": "Scope rerult to this session id.",
+        "schema": {
+          "type": "string",
+          "description": "Scope rerult to this session id."
+        }
+      },
+      {
+        "in": "query",
+        "name": "conversation_id",
+        "description": "Scope result to this conversation id.",
+        "schema": {
+          "type": "string",
+          "description": "Scope result to this conversation id."
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "User Sentiment Chart.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "chart_name": {
+                  "type": "string",
+                  "description": "Name of the chart"
+                },
+                "groups": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "group": {
+                        "type": "string",
+                        "description": "Group name"
+                      },
+                      "slices": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "label": {
+                              "type": "string",
+                              "description": "Label for the slice"
+                            },
+                            "value": {
+                              "type": "number",
+                              "description": "Value for the slice"
+                            },
+                            "percent": {
+                              "type": "number",
+                              "description": "Percentage of the slice"
+                            },
+                            "drilldown_id": {
+                              "type": "string",
+                              "description": "Drilldown id for this slice"
+                            }
+                          },
+                          "required": [
+                            "label",
+                            "value",
+                            "percent"
+                          ],
+                          "description": "A slice of a pie chart"
+                        },
+                        "description": "Slices for the group"
+                      }
+                    },
+                    "required": [
+                      "group",
+                      "slices"
+                    ]
+                  },
+                  "description": "Groups of pie charts, if group by was used."
+                },
+                "slices": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "label": {
+                        "type": "string",
+                        "description": "Label for the slice"
+                      },
+                      "value": {
+                        "type": "number",
+                        "description": "Value for the slice"
+                      },
+                      "percent": {
+                        "type": "number",
+                        "description": "Percentage of the slice"
+                      },
+                      "drilldown_id": {
+                        "type": "string",
+                        "description": "Drilldown id for this slice"
+                      }
+                    },
+                    "required": [
+                      "label",
+                      "value",
+                      "percent"
+                    ],
+                    "description": "A slice of a pie chart"
+                  },
+                  "description": "Slices of the pie chart, if no group by was used."
+                },
+                "highlights": {
+                  "type": "object",
+                  "properties": {
+                    "positive_percent": {
+                      "type": "number",
+                      "description": "Percentage of positive sentiment"
+                    },
+                    "positive_total": {
+                      "type": "number",
+                      "description": "Total count of positive sentiment"
+                    },
+                    "negative_percent": {
+                      "type": "number",
+                      "description": "Percentage of negative sentiment"
+                    },
+                    "negative_total": {
+                      "type": "number",
+                      "description": "Total count of negative sentiment"
+                    },
+                    "neutral_percent": {
+                      "type": "number",
+                      "description": "Percentage of neutral sentiment"
+                    },
+                    "neutral_total": {
+                      "type": "number",
+                      "description": "Total count of neutral sentiment"
+                    }
+                  },
+                  "required": [
+                    "positive_percent",
+                    "positive_total",
+                    "negative_percent",
+                    "negative_total",
+                    "neutral_percent",
+                    "neutral_total"
+                  ],
+                  "description": "Highlights of the sentiment analysis chart, if not grouped."
+                }
+              },
+              "required": [
+                "chart_name"
+              ],
+              "description": "Sentiment analysis chart result"
+            }
+          }
+        }
+      }
+    }
+  }
+}

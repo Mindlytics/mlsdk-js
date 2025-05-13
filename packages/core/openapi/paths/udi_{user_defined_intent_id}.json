@@ -1,0 +1,251 @@
+{
+  "get": {
+    "tags": [
+      "User Defined Intents"
+    ],
+    "summary": "Get a User Defined Intent",
+    "description": "Get a User Defined Intent",
+    "parameters": [
+      {
+        "name": "user_defined_intent_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Success",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_defined_intent_id": {
+                  "type": "string",
+                  "description": "The user defined intent id."
+                },
+                "intent": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "description"
+                  ],
+                  "description": "The intent name and description."
+                },
+                "attributes": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "description"
+                    ]
+                  },
+                  "description": "The attributes of the intent.  Slot names and descriptions."
+                },
+                "archived": {
+                  "type": "boolean",
+                  "description": "Whether the intent is archived or not."
+                }
+              },
+              "required": [
+                "user_defined_intent_id",
+                "intent",
+                "attributes"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "put": {
+    "tags": [
+      "User Defined Intents"
+    ],
+    "summary": "Update a User Defined Intent",
+    "description": "Update a User Defined Intent",
+    "parameters": [
+      {
+        "name": "user_defined_intent_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "requestBody": {
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "intent": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "description"
+                ],
+                "description": "The intent name and description."
+              },
+              "attributes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "description"
+                  ]
+                },
+                "description": "The attributes of the intent.  Slot names and descriptions."
+              },
+              "archived": {
+                "type": "boolean",
+                "description": "Whether the intent is archived or not."
+              }
+            },
+            "required": [
+              "intent",
+              "attributes"
+            ]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Success",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_defined_intent_id": {
+                  "type": "string",
+                  "description": "The user defined intent id."
+                },
+                "intent": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "description"
+                  ],
+                  "description": "The intent name and description."
+                },
+                "attributes": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "description"
+                    ]
+                  },
+                  "description": "The attributes of the intent.  Slot names and descriptions."
+                },
+                "archived": {
+                  "type": "boolean",
+                  "description": "Whether the intent is archived or not."
+                }
+              },
+              "required": [
+                "user_defined_intent_id",
+                "intent",
+                "attributes"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "delete": {
+    "tags": [
+      "User Defined Intents"
+    ],
+    "summary": "Delete a User Defined Intent",
+    "description": "Delete a User Defined Intent",
+    "parameters": [
+      {
+        "name": "user_defined_intent_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Success",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "success"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

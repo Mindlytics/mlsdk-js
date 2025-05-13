@@ -1,0 +1,89 @@
+{
+  "get": {
+    "tags": [
+      "Aggregation"
+    ],
+    "summary": "Get Trait Values",
+    "description": "Get Trait Values",
+    "parameters": [
+      {
+        "name": "event_regex",
+        "in": "query",
+        "description": "Event Regex",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "trait_name_regex",
+        "in": "query",
+        "description": "Trait Name Regex",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "trait_value_regex",
+        "in": "query",
+        "description": "Trait Value Regex",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "organization_id",
+        "in": "query",
+        "description": "organization_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "app_id",
+        "in": "query",
+        "description": "app_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "session_id",
+        "in": "query",
+        "description": "session_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "conversation_id",
+        "in": "query",
+        "description": "conversation_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Trait Values",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

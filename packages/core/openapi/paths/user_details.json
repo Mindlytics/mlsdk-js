@@ -1,0 +1,260 @@
+{
+  "get": {
+    "tags": [
+      "User"
+    ],
+    "summary": "Get user details",
+    "description": "Get user details",
+    "parameters": [
+      {
+        "in": "query",
+        "name": "user_id",
+        "description": "User database ID",
+        "schema": {
+          "type": "string",
+          "description": "User database ID"
+        },
+        "required": true
+      },
+      {
+        "in": "query",
+        "name": "limit",
+        "description": "Limit the number of results to return.  Default is 100000",
+        "schema": {
+          "type": "number",
+          "description": "Limit the number of results to return.  Default is 100000"
+        }
+      },
+      {
+        "in": "query",
+        "name": "offset",
+        "description": "Offset the results by this number.  Default is 0",
+        "schema": {
+          "type": "number",
+          "description": "Offset the results by this number.  Default is 0"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "User details",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sessions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "session_id": {
+                        "type": "string",
+                        "description": "Session ID"
+                      },
+                      "user_id": {
+                        "type": "string",
+                        "description": "User ID"
+                      },
+                      "started_at": {
+                        "type": "string",
+                        "description": "Session start date"
+                      },
+                      "ended_at": {
+                        "type": "string",
+                        "description": "Session end date"
+                      },
+                      "duration": {
+                        "type": "number",
+                        "description": "Session duration in milliseconds"
+                      },
+                      "attributes": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "boolean"
+                            }
+                          ]
+                        },
+                        "description": "Session attributes"
+                      },
+                      "user_traits": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "boolean"
+                            }
+                          ]
+                        },
+                        "description": "User traits at the time of the session"
+                      },
+                      "events": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "user_id": {
+                              "type": "string",
+                              "description": "User ID"
+                            },
+                            "event_id": {
+                              "type": "string",
+                              "description": "Event ID"
+                            },
+                            "session_id": {
+                              "type": "string",
+                              "description": "Session ID"
+                            },
+                            "conversation_id": {
+                              "type": "string",
+                              "description": "Conversation ID"
+                            },
+                            "timestamp": {
+                              "type": "string",
+                              "description": "Event timestamp"
+                            },
+                            "event": {
+                              "type": "string",
+                              "description": "Event name"
+                            },
+                            "properties": {
+                              "type": "object",
+                              "additionalProperties": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "number"
+                                  },
+                                  {
+                                    "type": "boolean"
+                                  },
+                                  {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "number"
+                                    }
+                                  }
+                                ]
+                              },
+                              "description": "Event properties"
+                            },
+                            "user_traits": {
+                              "type": "object",
+                              "additionalProperties": {
+                                "anyOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "number"
+                                  },
+                                  {
+                                    "type": "boolean"
+                                  }
+                                ]
+                              },
+                              "description": "User traits at the time of the event"
+                            }
+                          },
+                          "required": [
+                            "user_id",
+                            "event_id",
+                            "session_id",
+                            "timestamp",
+                            "event",
+                            "properties",
+                            "user_traits"
+                          ],
+                          "description": "Event object"
+                        },
+                        "description": "List of events in the session"
+                      }
+                    },
+                    "required": [
+                      "session_id",
+                      "user_id",
+                      "started_at",
+                      "ended_at",
+                      "duration",
+                      "attributes",
+                      "user_traits",
+                      "events"
+                    ],
+                    "description": "Session object"
+                  },
+                  "description": "List of sessions for the user"
+                },
+                "id": {
+                  "type": "string",
+                  "description": "User ID to display"
+                },
+                "user_id": {
+                  "type": "string",
+                  "description": "The user ID in the database"
+                },
+                "aliases": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "List of aliases for the user"
+                },
+                "created_at": {
+                  "type": "string",
+                  "description": "Date the user was created"
+                },
+                "traits": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      }
+                    ]
+                  },
+                  "description": "User traits"
+                }
+              },
+              "required": [
+                "sessions",
+                "id",
+                "user_id",
+                "aliases",
+                "created_at",
+                "traits"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

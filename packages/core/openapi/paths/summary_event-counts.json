@@ -1,0 +1,115 @@
+{
+  "get": {
+    "tags": [
+      "Summary"
+    ],
+    "summary": "Get Project Event Counts",
+    "description": "Get a count of events for each passed in range.",
+    "parameters": [
+      {
+        "in": "query",
+        "name": "ranges",
+        "description": "Array of ranges",
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "start": {
+                "type": "string",
+                "description": "The start of the range as an ISO date string",
+                "example": "2021-01-01T00:00:00Z"
+              },
+              "end": {
+                "type": "string",
+                "description": "The end of the range as an ISO date string",
+                "example": "2021-01-02T00:00:00Z"
+              },
+              "period": {
+                "type": "string",
+                "enum": [
+                  "day",
+                  "week",
+                  "month"
+                ],
+                "description": "The size of the bins, or points, in a chart",
+                "example": "day"
+              },
+              "tz": {
+                "type": "string",
+                "description": "The browser's timezone",
+                "example": "America/New_York"
+              }
+            },
+            "required": [
+              "start",
+              "end",
+              "period",
+              "tz"
+            ],
+            "description": "The chart date picker",
+            "example": {
+              "start": "2021-01-01T00:00:00Z",
+              "end": "2021-01-02T00:00:00Z",
+              "period": "day",
+              "tz": "America/New_York"
+            }
+          },
+          "description": "Array of ranges",
+          "example": [
+            {
+              "start": "2023-01-01T00:00:00.000Z",
+              "end": "2023-01-31T23:59:59.000Z",
+              "period": "day",
+              "tz": "UTC"
+            },
+            {
+              "start": "2023-02-01T00:00:00.000Z",
+              "end": "2023-03-02T23:59:59.000Z",
+              "period": "day",
+              "tz": "UTC"
+            }
+          ]
+        },
+        "required": true
+      },
+      {
+        "in": "query",
+        "name": "session_id",
+        "description": "Scope rerult to this session id.",
+        "schema": {
+          "type": "string",
+          "description": "Scope rerult to this session id."
+        }
+      },
+      {
+        "in": "query",
+        "name": "conversation_id",
+        "description": "Scope result to this conversation id.",
+        "schema": {
+          "type": "string",
+          "description": "Scope result to this conversation id."
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Array of event counts for each range.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "example": [
+                100,
+                200
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

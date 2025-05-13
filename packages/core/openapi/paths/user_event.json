@@ -1,0 +1,113 @@
+{
+  "get": {
+    "tags": [
+      "User"
+    ],
+    "summary": "Get event details",
+    "description": "Get event details",
+    "parameters": [
+      {
+        "in": "query",
+        "name": "event_id",
+        "description": "Event ID",
+        "schema": {
+          "type": "string",
+          "description": "Event ID"
+        },
+        "required": true
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Event details",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "organization_id": {
+                  "type": "string"
+                },
+                "app_id": {
+                  "type": "string"
+                },
+                "session_id": {
+                  "type": "string"
+                },
+                "user_id": {
+                  "type": "string"
+                },
+                "event_id": {
+                  "type": "string"
+                },
+                "conversation_id": {
+                  "type": "string"
+                },
+                "origin_event_id": {
+                  "type": "string"
+                },
+                "timestamp": {
+                  "type": "string"
+                },
+                "event": {
+                  "type": "string"
+                },
+                "properties": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "user_traits": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      }
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "organization_id",
+                "app_id",
+                "session_id",
+                "user_id",
+                "event_id"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

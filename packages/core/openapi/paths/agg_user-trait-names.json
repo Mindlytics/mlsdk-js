@@ -1,0 +1,117 @@
+{
+  "get": {
+    "tags": [
+      "Aggregation"
+    ],
+    "summary": "Get User Trait Names",
+    "description": "Get User Trait Names",
+    "parameters": [
+      {
+        "name": "id_regex",
+        "in": "query",
+        "description": "ID Regex",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "picks",
+        "in": "query",
+        "description": "Existing Picks",
+        "required": false,
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Previously picked proerty, trait or attribute name."
+              },
+              "value": {
+                "type": "string",
+                "description": "Previously picked property, trait or attribute value."
+              }
+            },
+            "required": [
+              "name",
+              "value"
+            ]
+          },
+          "description": "Existing picks.  Will narrown now current return values.",
+          "example": [
+            {
+              "name": "name",
+              "value": "John Doe"
+            },
+            {
+              "name": "age",
+              "value": "30"
+            }
+          ]
+        }
+      },
+      {
+        "name": "trait_regex",
+        "in": "query",
+        "description": "Trait Regex",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "organization_id",
+        "in": "query",
+        "description": "organization_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "app_id",
+        "in": "query",
+        "description": "app_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "session_id",
+        "in": "query",
+        "description": "session_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "conversation_id",
+        "in": "query",
+        "description": "conversation_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "User Trait Names",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

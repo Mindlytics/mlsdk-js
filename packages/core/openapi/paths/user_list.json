@@ -1,0 +1,145 @@
+{
+  "get": {
+    "tags": [
+      "User"
+    ],
+    "summary": "List users",
+    "description": "List users",
+    "parameters": [
+      {
+        "in": "query",
+        "name": "regex",
+        "description": "Regex to search for in user_id and traits.  This is a lucene style syntax.",
+        "schema": {
+          "type": "string",
+          "description": "Regex to search for in user_id and traits.  This is a lucene style syntax."
+        }
+      },
+      {
+        "in": "query",
+        "name": "limit",
+        "description": "Limit the number of results to return.  Default is 100000",
+        "schema": {
+          "type": "number",
+          "description": "Limit the number of results to return.  Default is 100000"
+        }
+      },
+      {
+        "in": "query",
+        "name": "offset",
+        "description": "Offset the results by this number.  Default is 0",
+        "schema": {
+          "type": "number",
+          "description": "Offset the results by this number.  Default is 0"
+        }
+      },
+      {
+        "in": "query",
+        "name": "sort",
+        "description": "Sort the results by this specification.",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "description": "Field to sort by"
+            },
+            "order": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "description": "Order to sort by"
+            }
+          },
+          "required": [
+            "value",
+            "order"
+          ],
+          "example": {
+            "value": "created_at",
+            "order": "asc"
+          },
+          "description": "Sort the results by this specification."
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "List of users",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "users": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "User ID to display"
+                      },
+                      "user_id": {
+                        "type": "string",
+                        "description": "The user ID in the database"
+                      },
+                      "aliases": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "List of aliases for the user"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "description": "Date the user was created"
+                      },
+                      "traits": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "boolean"
+                            }
+                          ]
+                        },
+                        "description": "User traits"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "user_id",
+                      "aliases",
+                      "created_at",
+                      "traits"
+                    ],
+                    "description": "User object"
+                  },
+                  "description": "List of matching users, limited by the limit and offset parameters"
+                },
+                "total": {
+                  "type": "number",
+                  "description": "Total number of users matching the query with no limit"
+                }
+              },
+              "required": [
+                "users",
+                "total"
+              ],
+              "description": "List of users"
+            }
+          }
+        }
+      }
+    }
+  }
+}

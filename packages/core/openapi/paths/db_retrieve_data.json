@@ -1,0 +1,26 @@
+{
+  "get": {
+    "tags": [
+      "Database"
+    ],
+    "summary": "Retrieve drilldown data",
+    "description": "Retrieve drilldown data",
+    "parameters": [
+      {
+        "name": "id",
+        "in": "query",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "title": "id",
+          "description": "Data object id"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Successful response.  A JSON object or array."
+      }
+    }
+  }
+}

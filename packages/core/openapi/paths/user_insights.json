@@ -1,0 +1,154 @@
+{
+  "get": {
+    "tags": [
+      "User"
+    ],
+    "summary": "Get user insights",
+    "description": "Get user insights",
+    "parameters": [
+      {
+        "in": "query",
+        "name": "user_id",
+        "description": "User database ID",
+        "schema": {
+          "type": "string",
+          "description": "User database ID"
+        },
+        "required": true
+      },
+      {
+        "in": "query",
+        "name": "limit",
+        "description": "Limit the number of results to return.  Default is 100000",
+        "schema": {
+          "type": "number",
+          "description": "Limit the number of results to return.  Default is 100000"
+        }
+      },
+      {
+        "in": "query",
+        "name": "offset",
+        "description": "Offset the results by this number.  Default is 0",
+        "schema": {
+          "type": "number",
+          "description": "Offset the results by this number.  Default is 0"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "User insights",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "conversations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "user_id": {
+                        "type": "string",
+                        "description": "User ID"
+                      },
+                      "session_id": {
+                        "type": "string",
+                        "description": "Session ID"
+                      },
+                      "conversation_id": {
+                        "type": "string",
+                        "description": "Conversation ID"
+                      },
+                      "started_at": {
+                        "type": "string",
+                        "description": "Conversation start date"
+                      },
+                      "duration": {
+                        "type": "number",
+                        "description": "Conversation duration in milliseconds"
+                      },
+                      "sentiment": {
+                        "type": "string",
+                        "description": "Sentiment of the conversation"
+                      },
+                      "summary": {
+                        "type": "string",
+                        "description": "Summary of the conversation"
+                      },
+                      "successful_intents": {
+                        "type": "number",
+                        "description": "Number of successful intents in the conversation"
+                      },
+                      "unsuccessful_intents": {
+                        "type": "number",
+                        "description": "Number of unsuccessful intents in the conversation"
+                      }
+                    },
+                    "required": [
+                      "user_id",
+                      "session_id",
+                      "conversation_id",
+                      "started_at",
+                      "duration",
+                      "sentiment",
+                      "summary",
+                      "successful_intents",
+                      "unsuccessful_intents"
+                    ],
+                    "description": "Conversation object"
+                  },
+                  "description": "List of conversations for the user"
+                },
+                "id": {
+                  "type": "string",
+                  "description": "User ID to display"
+                },
+                "user_id": {
+                  "type": "string",
+                  "description": "The user ID in the database"
+                },
+                "aliases": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "List of aliases for the user"
+                },
+                "created_at": {
+                  "type": "string",
+                  "description": "Date the user was created"
+                },
+                "traits": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      }
+                    ]
+                  },
+                  "description": "User traits"
+                }
+              },
+              "required": [
+                "conversations",
+                "id",
+                "user_id",
+                "aliases",
+                "created_at",
+                "traits"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

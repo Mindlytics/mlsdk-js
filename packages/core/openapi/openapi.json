@@ -1,0 +1,69 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Mindlytics API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://app-staging.mindlytics.ai/bc/v1"
+    }
+  ],
+  "security": [
+    {
+      "APIKey": [],
+      "APPId": []
+    }
+  ],
+  "paths": {
+    "/events/event": {
+      "$ref": "paths/events_event.json"
+    },
+    "/events/event/identify": {
+      "$ref": "paths/events_event_identify.json"
+    },
+    "/events/event/alias": {
+      "$ref": "paths/events_event_alias.json"
+    },
+    "/events/event/start-session": {
+      "$ref": "paths/events_event_start-session.json"
+    },
+    "/events/event/end-session": {
+      "$ref": "paths/events_event_end-session.json"
+    },
+    "/events/event/track": {
+      "$ref": "paths/events_event_track.json"
+    },
+    "/events/event/start-conversation": {
+      "$ref": "paths/events_event_start-conversation.json"
+    },
+    "/events/event/end-conversation": {
+      "$ref": "paths/events_event_end-conversation.json"
+    },
+    "/events/event/conversation-turn": {
+      "$ref": "paths/events_event_conversation-turn.json"
+    },
+    "/events/event/conversation-usage": {
+      "$ref": "paths/events_event_conversation-usage.json"
+    },
+    "/events/event/conversation-function": {
+      "$ref": "paths/events_event_conversation-function.json"
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "APIKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "API Key for your organization"
+      },
+      "APPId": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-App-ID",
+        "description": "Project ID"
+      }
+    }
+  }
+}

@@ -1,0 +1,501 @@
+{
+  "post": {
+    "tags": [
+      "Cohorts"
+    ],
+    "summary": "Create cohort",
+    "description": "Create cohort",
+    "requestBody": {
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "The name of the cohort."
+              },
+              "description": {
+                "type": "string",
+                "description": "The description of the cohort."
+              },
+              "terms": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "operator": {
+                      "type": "string",
+                      "enum": [
+                        "and",
+                        "or"
+                      ],
+                      "default": "and",
+                      "description": "The operator to use when combining this term with other terms.  The default is \"and\"."
+                    },
+                    "termFilter": {
+                      "oneOf": [
+                        {
+                          "$ref": "../components/schemas/CohortEventFilter.json"
+                        },
+                        {
+                          "$ref": "../components/schemas/CohortIntentFilter.json"
+                        },
+                        {
+                          "$ref": "../components/schemas/CohortTraitFilter.json"
+                        },
+                        {
+                          "$ref": "../components/schemas/CohortCohortFilter.json"
+                        }
+                      ],
+                      "discriminator": {
+                        "propertyName": "type",
+                        "mapping": {
+                          "event": "../components/schemas/CohortEventFilter.json",
+                          "intent": "../components/schemas/CohortIntentFilter.json",
+                          "trait": "../components/schemas/CohortTraitFilter.json",
+                          "cohort": "../components/schemas/CohortCohortFilter.json"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "termFilter"
+                  ]
+                },
+                "minItems": 1,
+                "description": "The terms that make up the cohort.  There must be at least one term in the array."
+              }
+            },
+            "required": [
+              "name",
+              "terms"
+            ],
+            "description": "A cohort is a group of users that meet certain criteria."
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Cohort created",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "organization_id": {
+                  "type": "string",
+                  "description": "The organization id of the cohort."
+                },
+                "app_id": {
+                  "type": "string",
+                  "description": "The app id of the cohort."
+                },
+                "cohort_id": {
+                  "type": "string",
+                  "description": "The cohort id of the cohort."
+                },
+                "created_at": {
+                  "type": "string",
+                  "description": "The date the cohort was created."
+                },
+                "updated_at": {
+                  "type": "string",
+                  "description": "The date the cohort was updated."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "The name of the cohort."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "The description of the cohort."
+                },
+                "terms": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "operator": {
+                        "type": "string",
+                        "enum": [
+                          "and",
+                          "or"
+                        ],
+                        "default": "and",
+                        "description": "The operator to use when combining this term with other terms.  The default is \"and\"."
+                      },
+                      "termFilter": {
+                        "oneOf": [
+                          {
+                            "$ref": "../components/schemas/CohortEventFilter.json"
+                          },
+                          {
+                            "$ref": "../components/schemas/CohortIntentFilter.json"
+                          },
+                          {
+                            "$ref": "../components/schemas/CohortTraitFilter.json"
+                          },
+                          {
+                            "$ref": "../components/schemas/CohortCohortFilter.json"
+                          }
+                        ],
+                        "discriminator": {
+                          "propertyName": "type",
+                          "mapping": {
+                            "event": "../components/schemas/CohortEventFilter.json",
+                            "intent": "../components/schemas/CohortIntentFilter.json",
+                            "trait": "../components/schemas/CohortTraitFilter.json",
+                            "cohort": "../components/schemas/CohortCohortFilter.json"
+                          }
+                        }
+                      }
+                    },
+                    "required": [
+                      "operator",
+                      "termFilter"
+                    ]
+                  },
+                  "minItems": 1,
+                  "description": "The terms that make up the cohort.  There must be at least one term in the array."
+                }
+              },
+              "required": [
+                "organization_id",
+                "app_id",
+                "cohort_id",
+                "created_at",
+                "updated_at",
+                "name",
+                "terms"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "put": {
+    "tags": [
+      "Cohorts"
+    ],
+    "summary": "Update cohort",
+    "description": "Update cohort",
+    "parameters": [
+      {
+        "in": "query",
+        "name": "cohort_id",
+        "description": "Cohort id",
+        "schema": {
+          "type": "string",
+          "description": "Cohort id"
+        },
+        "required": true
+      }
+    ],
+    "requestBody": {
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "The name of the cohort."
+              },
+              "description": {
+                "type": "string",
+                "description": "The description of the cohort."
+              },
+              "terms": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "operator": {
+                      "type": "string",
+                      "enum": [
+                        "and",
+                        "or"
+                      ],
+                      "default": "and",
+                      "description": "The operator to use when combining this term with other terms.  The default is \"and\"."
+                    },
+                    "termFilter": {
+                      "oneOf": [
+                        {
+                          "$ref": "../components/schemas/CohortEventFilter.json"
+                        },
+                        {
+                          "$ref": "../components/schemas/CohortIntentFilter.json"
+                        },
+                        {
+                          "$ref": "../components/schemas/CohortTraitFilter.json"
+                        },
+                        {
+                          "$ref": "../components/schemas/CohortCohortFilter.json"
+                        }
+                      ],
+                      "discriminator": {
+                        "propertyName": "type",
+                        "mapping": {
+                          "event": "../components/schemas/CohortEventFilter.json",
+                          "intent": "../components/schemas/CohortIntentFilter.json",
+                          "trait": "../components/schemas/CohortTraitFilter.json",
+                          "cohort": "../components/schemas/CohortCohortFilter.json"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "termFilter"
+                  ]
+                },
+                "minItems": 1,
+                "description": "The terms that make up the cohort.  There must be at least one term in the array."
+              }
+            },
+            "required": [
+              "name",
+              "terms"
+            ],
+            "description": "A cohort is a group of users that meet certain criteria."
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Cohort updated",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "organization_id": {
+                  "type": "string",
+                  "description": "The organization id of the cohort."
+                },
+                "app_id": {
+                  "type": "string",
+                  "description": "The app id of the cohort."
+                },
+                "cohort_id": {
+                  "type": "string",
+                  "description": "The cohort id of the cohort."
+                },
+                "created_at": {
+                  "type": "string",
+                  "description": "The date the cohort was created."
+                },
+                "updated_at": {
+                  "type": "string",
+                  "description": "The date the cohort was updated."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "The name of the cohort."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "The description of the cohort."
+                },
+                "terms": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "operator": {
+                        "type": "string",
+                        "enum": [
+                          "and",
+                          "or"
+                        ],
+                        "default": "and",
+                        "description": "The operator to use when combining this term with other terms.  The default is \"and\"."
+                      },
+                      "termFilter": {
+                        "oneOf": [
+                          {
+                            "$ref": "../components/schemas/CohortEventFilter.json"
+                          },
+                          {
+                            "$ref": "../components/schemas/CohortIntentFilter.json"
+                          },
+                          {
+                            "$ref": "../components/schemas/CohortTraitFilter.json"
+                          },
+                          {
+                            "$ref": "../components/schemas/CohortCohortFilter.json"
+                          }
+                        ],
+                        "discriminator": {
+                          "propertyName": "type",
+                          "mapping": {
+                            "event": "../components/schemas/CohortEventFilter.json",
+                            "intent": "../components/schemas/CohortIntentFilter.json",
+                            "trait": "../components/schemas/CohortTraitFilter.json",
+                            "cohort": "../components/schemas/CohortCohortFilter.json"
+                          }
+                        }
+                      }
+                    },
+                    "required": [
+                      "operator",
+                      "termFilter"
+                    ]
+                  },
+                  "minItems": 1,
+                  "description": "The terms that make up the cohort.  There must be at least one term in the array."
+                }
+              },
+              "required": [
+                "organization_id",
+                "app_id",
+                "cohort_id",
+                "created_at",
+                "updated_at",
+                "name",
+                "terms"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "delete": {
+    "tags": [
+      "Cohorts"
+    ],
+    "summary": "Delete cohort",
+    "description": "Delete cohort",
+    "parameters": [
+      {
+        "in": "query",
+        "name": "cohort_id",
+        "description": "Cohort id",
+        "schema": {
+          "type": "string",
+          "description": "Cohort id"
+        },
+        "required": true
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Cohort deleted"
+      }
+    }
+  },
+  "get": {
+    "tags": [
+      "Cohorts"
+    ],
+    "summary": "Get cohorts",
+    "description": "Get cohorts",
+    "responses": {
+      "200": {
+        "description": "Cohorts found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "organization_id": {
+                    "type": "string",
+                    "description": "The organization id of the cohort."
+                  },
+                  "app_id": {
+                    "type": "string",
+                    "description": "The app id of the cohort."
+                  },
+                  "cohort_id": {
+                    "type": "string",
+                    "description": "The cohort id of the cohort."
+                  },
+                  "created_at": {
+                    "type": "string",
+                    "description": "The date the cohort was created."
+                  },
+                  "updated_at": {
+                    "type": "string",
+                    "description": "The date the cohort was updated."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "The name of the cohort."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "The description of the cohort."
+                  },
+                  "terms": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "operator": {
+                          "type": "string",
+                          "enum": [
+                            "and",
+                            "or"
+                          ],
+                          "default": "and",
+                          "description": "The operator to use when combining this term with other terms.  The default is \"and\"."
+                        },
+                        "termFilter": {
+                          "oneOf": [
+                            {
+                              "$ref": "../components/schemas/CohortEventFilter.json"
+                            },
+                            {
+                              "$ref": "../components/schemas/CohortIntentFilter.json"
+                            },
+                            {
+                              "$ref": "../components/schemas/CohortTraitFilter.json"
+                            },
+                            {
+                              "$ref": "../components/schemas/CohortCohortFilter.json"
+                            }
+                          ],
+                          "discriminator": {
+                            "propertyName": "type",
+                            "mapping": {
+                              "event": "../components/schemas/CohortEventFilter.json",
+                              "intent": "../components/schemas/CohortIntentFilter.json",
+                              "trait": "../components/schemas/CohortTraitFilter.json",
+                              "cohort": "../components/schemas/CohortCohortFilter.json"
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "operator",
+                        "termFilter"
+                      ]
+                    },
+                    "minItems": 1,
+                    "description": "The terms that make up the cohort.  There must be at least one term in the array."
+                  }
+                },
+                "required": [
+                  "organization_id",
+                  "app_id",
+                  "cohort_id",
+                  "created_at",
+                  "updated_at",
+                  "name",
+                  "terms"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

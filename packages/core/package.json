@@ -1,0 +1,23 @@
+{
+  "name": "@mindlytics/core",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "generate": "openapi-typescript openapi/openapi.json -o src/schema.ts",
+    "build": "tsc"
+  },
+  "exports": {
+    ".": {
+      "ml-dev": "./src/index.ts",
+      "types": "./dist/index.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "openapi-fetch": "^0.14.0"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.8.0",
+    "typescript": "^5.8.3"
+  }
+}

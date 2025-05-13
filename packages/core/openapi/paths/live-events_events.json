@@ -1,0 +1,140 @@
+{
+  "get": {
+    "tags": [
+      "Live Events"
+    ],
+    "summary": "Get events in a time range, with optional limit.  Returns events in descending order.",
+    "description": "Get live events.  The start and end timestamps are required. The limit is optional and defaults to 150.",
+    "parameters": [
+      {
+        "in": "query",
+        "name": "start",
+        "description": "The start timestamp of the events to retrieve",
+        "schema": {
+          "type": "string",
+          "title": "Start Timestamp",
+          "description": "The start timestamp of the events to retrieve"
+        },
+        "required": true
+      },
+      {
+        "in": "query",
+        "name": "end",
+        "description": "The end timestamp of the events to retrieve",
+        "schema": {
+          "type": "string",
+          "title": "End Timestamp",
+          "description": "The end timestamp of the events to retrieve"
+        },
+        "required": true
+      },
+      {
+        "in": "query",
+        "name": "limit",
+        "description": "The maximum number of events to retrieve (default is 150)",
+        "schema": {
+          "type": "number",
+          "title": "Limit",
+          "description": "The maximum number of events to retrieve (default is 150)"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "OK",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "organization_id": {
+                    "type": "string"
+                  },
+                  "app_id": {
+                    "type": "string"
+                  },
+                  "session_id": {
+                    "type": "string"
+                  },
+                  "user_id": {
+                    "type": "string"
+                  },
+                  "event_id": {
+                    "type": "string"
+                  },
+                  "conversation_id": {
+                    "type": "string"
+                  },
+                  "origin_event_id": {
+                    "type": "string"
+                  },
+                  "timestamp": {
+                    "type": "string"
+                  },
+                  "event": {
+                    "type": "string"
+                  },
+                  "properties": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "number"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "user_traits": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "organization_id",
+                  "app_id",
+                  "session_id",
+                  "user_id",
+                  "event_id"
+                ]
+              },
+              "title": "Live Events",
+              "description": "Array of events."
+            }
+          }
+        }
+      }
+    }
+  }
+}

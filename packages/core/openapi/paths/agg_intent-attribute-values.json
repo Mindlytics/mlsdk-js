@@ -1,0 +1,89 @@
+{
+  "get": {
+    "tags": [
+      "Aggregation"
+    ],
+    "summary": "Get Intent Attribute Values",
+    "description": "Get Intent Attribute Values",
+    "parameters": [
+      {
+        "name": "intent_regex",
+        "in": "query",
+        "description": "Intent Regex",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "attribute_name_regex",
+        "in": "query",
+        "description": "Attribute Name Regex",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "attribute_value_regex",
+        "in": "query",
+        "description": "Attribute Value Regex",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "organization_id",
+        "in": "query",
+        "description": "organization_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "app_id",
+        "in": "query",
+        "description": "app_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "session_id",
+        "in": "query",
+        "description": "session_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "conversation_id",
+        "in": "query",
+        "description": "conversation_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Intent Attribute Values",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

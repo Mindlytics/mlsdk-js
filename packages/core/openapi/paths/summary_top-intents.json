@@ -1,0 +1,115 @@
+{
+  "get": {
+    "tags": [
+      "Summary"
+    ],
+    "summary": "Get Top Intents",
+    "description": "Get a summary of top intents within a given time range",
+    "parameters": [
+      {
+        "in": "query",
+        "name": "range",
+        "description": "Time range for the summary",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "string",
+              "description": "The start of the range as an ISO date string",
+              "example": "2021-01-01T00:00:00Z"
+            },
+            "end": {
+              "type": "string",
+              "description": "The end of the range as an ISO date string",
+              "example": "2021-01-02T00:00:00Z"
+            },
+            "period": {
+              "type": "string",
+              "enum": [
+                "day",
+                "week",
+                "month"
+              ],
+              "description": "The size of the bins, or points, in a chart",
+              "example": "day"
+            },
+            "tz": {
+              "type": "string",
+              "description": "The browser's timezone",
+              "example": "America/New_York"
+            }
+          },
+          "required": [
+            "start",
+            "end",
+            "period",
+            "tz"
+          ],
+          "description": "Time range for the summary",
+          "example": {
+            "start": "2023-01-01T00:00:00.000Z",
+            "end": "2023-01-31T23:59:59.000Z",
+            "period": "day",
+            "tz": "UTC"
+          }
+        },
+        "required": true
+      },
+      {
+        "in": "query",
+        "name": "session_id",
+        "description": "Scope rerult to this session id.",
+        "schema": {
+          "type": "string",
+          "description": "Scope rerult to this session id."
+        }
+      },
+      {
+        "in": "query",
+        "name": "conversation_id",
+        "description": "Scope result to this conversation id.",
+        "schema": {
+          "type": "string",
+          "description": "Scope result to this conversation id."
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Top Intents Summary.  An array of objects with intent names as keys and counts as values, sorted by count descending.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "intent": {
+                    "type": "string"
+                  },
+                  "count": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "intent",
+                  "count"
+                ],
+                "example": [
+                  {
+                    "intent": "intent_name1",
+                    "count": 200
+                  },
+                  {
+                    "intent": "intent_name2",
+                    "count": 100
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

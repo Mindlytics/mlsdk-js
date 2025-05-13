@@ -1,0 +1,12 @@
+{
+  "name": "@mindlytics/node-sdk",
+  "version": "0.0.1",
+  "type": "module",
+  "dependencies": {
+    "@mindlytics/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.17",
+    "typescript": "^5.8.3"
+  }
+}

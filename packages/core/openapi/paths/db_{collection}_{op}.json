@@ -1,0 +1,110 @@
+{
+  "get": {
+    "tags": [
+      "Database"
+    ],
+    "summary": "Query a collection",
+    "description": "Query a collection",
+    "parameters": [
+      {
+        "name": "collection",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "users",
+            "events",
+            "sessions",
+            "conversations",
+            "messages",
+            "orgkeys",
+            "organizations",
+            "apps"
+          ],
+          "title": "Collection",
+          "description": "The collection to query"
+        }
+      },
+      {
+        "name": "op",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "find",
+            "findOne"
+          ],
+          "title": "Operation",
+          "description": "The operation to perform"
+        }
+      },
+      {
+        "name": "filter",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "title": "Filter",
+          "description": "The filter to apply to the query. A JSON object."
+        }
+      },
+      {
+        "name": "projection",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "title": "Projection",
+          "description": "The projection to apply to the query. A JSON object."
+        }
+      },
+      {
+        "name": "sort",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "title": "Sort",
+          "description": "The sort to apply to the query. A JSON object."
+        }
+      },
+      {
+        "name": "skip",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "number",
+          "title": "Skip",
+          "description": "The number of documents to skip"
+        }
+      },
+      {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "number",
+          "title": "Limit",
+          "description": "The maximum number of documents to return"
+        }
+      },
+      {
+        "name": "include",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "title": "Include",
+          "description": "The related collections to include. A JSON object."
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Successful response.  Either an array of documents (if find) or a single document (if findOne)"
+      }
+    }
+  }
+}
