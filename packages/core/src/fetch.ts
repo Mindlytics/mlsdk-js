@@ -1,7 +1,8 @@
 import createFetchClient, {type ClientOptions} from 'openapi-fetch';
+import type { paths } from './schema.ts';
 
 export function createClient(options: ClientOptions) {
-  return createFetchClient(options)
+  return createFetchClient<paths>(options)
 }
 
 export type Client = ReturnType<typeof createClient>;
