@@ -39,7 +39,7 @@ describe('Session', () => {
       })
       expect(session).toBeInstanceOf(Session)
       expect(session.sessionId).toMatch(/^[a-f0-9-]{36}$/) // UUID format
-      expect(session.userId).toBeNull()
+      expect(session.userId).toBeUndefined()
     })
 
     it('should create session with custom session ID', async () => {
@@ -85,7 +85,7 @@ describe('Session', () => {
     })
 
     describe('start', () => {
-      it('should start session without user ID', async () => {
+      it('should start session with device ID', async () => {
         let requestBody: any
 
         server.use(
@@ -99,6 +99,7 @@ describe('Session', () => {
         )
 
         await session.start({
+          deviceId: 'device-123',
           attributes: {
             platform: 'node',
             source: 'api',
@@ -110,6 +111,7 @@ describe('Session', () => {
         expect(requestBody).toMatchObject({
           type: 'start_session',
           session_id: session.sessionId,
+          device_id: 'device-123',
           attributes: {
             platform: 'node',
             source: 'api',
@@ -145,30 +147,35 @@ describe('Session', () => {
           },
         })
 
+        await session.identify({
+          id: 'user-1234',
+        })
+
         expect(session.userId).toBe('user-123')
 
         await session.flush()
 
         expect(identifyBody).toMatchObject({
           type: 'identify',
-          id: 'user-123',
+          id: 'user-1234',
           session_id: session.sessionId,
         })
 
         expect(startSessionBody).toMatchObject({
           type: 'start_session',
           session_id: session.sessionId,
-          userId: 'user-123',
+          id: 'user-123',
         })
       })
 
       it('should generate session ID if not provided', async () => {
-        const sessionWithoutId = new Session({
+        const sessionWithoutId = await Session.create({
           ...defaultOptions,
           sessionId: undefined,
         })
 
         await sessionWithoutId.start({
+          userId: 'user-123',
           attributes: { platform: 'node' },
         })
 

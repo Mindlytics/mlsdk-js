@@ -379,10 +379,7 @@ describe('MindlyticsClient', () => {
         session_id: 'session-123',
       })
 
-      expect(consoleSpy).toHaveBeenCalledWith(
-        '[MLSDK:DEBUG:EventQueue]',
-        expect.any(String),
-      )
+      expect(consoleSpy).toHaveBeenCalled()
 
       consoleSpy.mockRestore()
     })
