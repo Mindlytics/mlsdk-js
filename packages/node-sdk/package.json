@@ -2,6 +2,16 @@
   "name": "@mindlytics/node-sdk",
   "version": "0.0.1",
   "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "ml-dev": "./src/index.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "dependencies": {
     "@mindlytics/core": "workspace:*"
   },
