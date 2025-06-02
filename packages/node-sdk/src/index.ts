@@ -18,14 +18,47 @@ export interface SessionOptions extends MindlyticsOptions {
 }
 
 export interface SessionCreateParams {
+  /**
+   * The Mindlytics project ID
+   */
   projectId: string
+
+  /**
+   * The Mindlytics API key
+   */
   apiKey: string
+
+  /**
+   * A custom session ID, will be generated if not provided
+   */
   sessionId?: string
+
+  /**
+   * User ID, can also be set when starting a session
+   * Will start a new session if provided
+   */
+  userId?: string
+
+  /**
+   * Device ID, can also be set when starting a session
+   * Will start a new session if provided
+   */
+  deviceId?: string
+
+  /**
+   * The base URL of the Mindlytics API
+   */
+  baseUrl?: string
+
+  /**
+   * Whether to enable debug logging
+   */
+  debug?: boolean
 }
 
 export interface StartSessionParams
-  extends Omit<StartSessionParamsCore, 'type' | 'session_id'> {
-  userId?: string
+  extends Omit<StartSessionParamsCore, 'id' | 'type' | 'session_id'> {
+  user_id?: string
 }
 
 /**
@@ -41,7 +74,9 @@ export interface StartSessionParams
 export class Session {
   private session_id: string
 
-  private user_id: string | null = null
+  private user_id: string | undefined = undefined
+
+  private device_id: string | undefined = undefined
 
   private client: MindlyticsClient
 
@@ -54,7 +89,17 @@ export class Session {
   }
 
   static async create(params: SessionCreateParams) {
-    return new Session(params)
+    const { userId, deviceId, ...sessionOptions } = params
+    const session = new Session(sessionOptions)
+
+    if (userId || deviceId) {
+      await session.start({
+        user_id: userId,
+        device_id: deviceId,
+      })
+    }
+
+    return session
   }
 
   static use() {
@@ -98,22 +143,33 @@ export class Session {
     return this.user_id
   }
 
+  public get deviceId() {
+    return this.device_id
+  }
+
   public async start(params: StartSessionParams) {
+    const { user_id, device_id, ...rest } = params
+
     if (!this.session_id) {
       this.session_id = crypto.randomUUID()
     }
 
-    if (params.userId) {
-      await this.client.identify({
-        id: params.userId,
-        session_id: this.session_id,
-      })
+    if (params.user_id) {
+      this.user_id = params.user_id
+    }
 
-      this.user_id = params.userId
+    if (params.device_id) {
+      this.device_id = params.device_id
+    }
+
+    if (!this.user_id && !this.device_id) {
+      throw new Error('User ID or device ID is required')
     }
 
     const response = await this.client.startSession({
-      ...params,
+      ...rest,
+      id: this.user_id,
+      device_id: this.device_id,
       session_id: this.session_id,
     })
 

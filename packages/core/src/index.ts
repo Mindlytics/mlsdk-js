@@ -1,11 +1,12 @@
 import { createClient, type Client } from './fetch.ts'
-import type { paths } from './schema.ts'
+import type { paths } from './schema.gen.ts'
 import { EventQueue, QueueOptions } from './queue.ts'
 import type {
   ClientMethod,
   FetchResponse,
   MaybeOptionalInit,
 } from 'openapi-fetch'
+import type { EventPaths } from './schema.ts'
 
 export interface MindlyticsOptions {
   apiKey: string
@@ -20,7 +21,7 @@ export interface MindlyticsOptions {
 export class MindlyticsClient<
   TOptions extends MindlyticsOptions = MindlyticsOptions,
 > {
-  private baseUrl: string = 'https://api.mindlytics.io/v1'
+  private baseUrl: string = 'https://app-staging.mindlytics.ai/bc/v1'
   private client: Client
   private eventQueue: EventQueue | null = null
 
@@ -94,8 +95,8 @@ export class MindlyticsClient<
    * Make a direct API call or queue it based on configuration
    */
   private makeRequest<
-    TPath extends Extract<keyof paths, string>,
-    Body extends paths[TPath]['post']['requestBody']['content']['application/json'],
+    TPath extends Extract<keyof EventPaths, string>,
+    Body extends EventPaths[TPath]['post']['requestBody']['content']['application/json'],
   >(
     path: TPath,
     body: Body,

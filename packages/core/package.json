@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "generate": "openapi-typescript openapi/openapi.json -o src/schema.ts",
+    "generate": "openapi-typescript schema.json -o src/schema.ts",
     "build": "tsc"
   },
   "exports": {

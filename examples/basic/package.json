@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "scripts": {
+    "dev": "tsx watch --env-file=.env index.ts"
+  },
   "dependencies": {
     "@mindlytics/node-sdk": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.4"
   }
 }

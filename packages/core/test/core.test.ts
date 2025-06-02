@@ -310,33 +310,6 @@ describe('MindlyticsClient', () => {
 
         await client.trackConversationTurn({
           conversation_id: 'conv-123',
-          turn_analysis: {
-            system: {
-              actions: [
-                {
-                  action: 'Attribute Advised',
-                  slot: 'intent',
-                  values: ['intent'],
-                },
-              ],
-            },
-            user: {
-              state: {
-                active_intent: 'intent',
-                requested_slots: ['intent'],
-                slot_values: {
-                  intent: ['intent'],
-                },
-              },
-              actions: [
-                {
-                  action: 'Attribute Accepted',
-                  slot: 'intent',
-                  values: ['intent'],
-                },
-              ],
-            },
-          },
           session_id: 'session-123',
           properties: {
             assistant: 'assistant',

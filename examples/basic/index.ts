@@ -1,13 +1,19 @@
 import { Session } from '@mindlytics/node-sdk'
 
 async function main() {
+  console.log({
+    projectId: process.env.PROJECT_ID,
+    apiKey: process.env.API_KEY,
+  })
+
   const session = await Session.create({
-    projectId: 'your-project-id',
-    apiKey: 'your-api-key',
+    projectId: process.env.PROJECT_ID!,
+    apiKey: process.env.API_KEY!,
+    debug: true,
   })
 
   await session.start({
-    userId: '123',
+    user_id: '123',
   })
 
   await session.withContext(async () => {
@@ -24,12 +30,16 @@ async function toolCall() {
 
   console.log(sessionId, userId)
 
-  session.track({
+  await session.track({
     event: 'tool_call',
     properties: {
       tool_call_id: '123',
     },
   })
+
+  await session.end()
+
+  await session.flush()
 }
 
 main().then(() => {

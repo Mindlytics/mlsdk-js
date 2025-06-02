@@ -1,5 +1,6 @@
 import { Client } from './fetch.ts'
-import type { paths } from './schema.ts'
+import type { paths } from './schema.gen.ts'
+import type { EventPaths } from './schema.ts'
 
 export interface QueueOptions {
   /**
@@ -42,7 +43,7 @@ export interface QueueItem {
   /**
    * The API method path
    */
-  path: keyof paths
+  path: keyof EventPaths
 
   /**
    * The request body
@@ -87,7 +88,7 @@ export class EventQueue {
       timestamp: item.timestamp ?? Date.now(),
     })
 
-    this.debug(`Item added to queue. Queue size: ${this.queue.length}`)
+    this.debug(`Item added to queue. Queue size: ${this.queue.length}`, item)
 
     // If we've reached the batch size, flush immediately
     if (this.queue.length >= this.options.batchSize) {
@@ -134,11 +135,18 @@ export class EventQueue {
       const batch = this.queue.splice(0, this.options.batchSize)
       this.debug(`Processing batch of ${batch.length} items`)
 
-      // Process each item in the batch
-      const promises = batch.map((item) => this.processItem(item))
+      for (const item of batch) {
+        await this.processItem(item)
+      }
 
-      // Wait for all requests to complete
-      await Promise.all(promises)
+      // TODO: ideally we call everything in parallel
+      // but it's not really possible, since session start needs to happen before any other events and end session needs to be last.
+
+      // Process each item in the batch
+      // const promises = batch.map((item) => this.processItem(item))
+
+      // // Wait for all requests to complete
+      // await Promise.all(promises)
     } catch (error) {
       this.debug(`Error during flush: ${error}`)
     } finally {
@@ -159,13 +167,23 @@ export class EventQueue {
    */
   private async processItem(item: QueueItem): Promise<void> {
     try {
-      this.debug(`Processing request to ${item.path}`)
+      this.debug(`Processing request to ${item.path}`, item.body, item.params)
 
       // Make the API request
-      await this.client.POST(item.path, {
+      const { data, error } = await this.client.POST(item.path, {
         body: item.body,
         params: item.params,
       })
+
+      if (error) {
+        this.debug(`Error processing request to ${item.path}: ${error}`)
+
+        throw new Error((error as any).message ?? 'Unknown error', {
+          cause: {
+            data,
+          },
+        })
+      }
 
       this.debug(`Successfully processed request to ${item.path}`)
     } catch (error) {
