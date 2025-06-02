@@ -63,6 +63,8 @@ export class EventQueue {
             for (const item of batch) {
                 await this.processItem(item);
             }
+            // TODO: ideally we call everything in parallel
+            // but it's not really possible, since session start needs to happen before any other events and end session needs to be last.
             // Process each item in the batch
             // const promises = batch.map((item) => this.processItem(item))
             // // Wait for all requests to complete

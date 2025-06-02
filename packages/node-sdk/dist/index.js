@@ -28,8 +28,8 @@ export class Session {
         const session = new Session(sessionOptions);
         if (userId || deviceId) {
             await session.start({
-                user_id: userId,
-                device_id: deviceId,
+                userId,
+                deviceId,
             });
         }
         return session;
@@ -75,15 +75,15 @@ export class Session {
         return this.device_id;
     }
     async start(params) {
-        const { user_id, device_id, ...rest } = params;
+        const { userId, deviceId, ...rest } = params;
         if (!this.session_id) {
             this.session_id = crypto.randomUUID();
         }
-        if (params.user_id) {
-            this.user_id = params.user_id;
+        if (userId) {
+            this.user_id = userId;
         }
-        if (params.device_id) {
-            this.device_id = params.device_id;
+        if (deviceId) {
+            this.device_id = deviceId;
         }
         if (!this.user_id && !this.device_id) {
             throw new Error('User ID or device ID is required');

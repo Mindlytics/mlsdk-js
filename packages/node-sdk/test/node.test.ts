@@ -417,31 +417,6 @@ describe('Session', () => {
 
         await session.trackConversationTurn({
           conversation_id: 'conv-123',
-          turn_analysis: {
-            system: {
-              actions: [
-                {
-                  action: 'Attribute Advised',
-                  slot: 'intent',
-                  values: ['greeting'],
-                },
-              ],
-            },
-            user: {
-              state: {
-                active_intent: 'greeting',
-                requested_slots: [],
-                slot_values: {},
-              },
-              actions: [
-                {
-                  action: 'Attribute Accepted',
-                  slot: 'intent',
-                  values: ['greeting'],
-                },
-              ],
-            },
-          },
           properties: {
             assistant: 'Hello! How can I help you?',
             user: 'Hi there!',
@@ -455,31 +430,6 @@ describe('Session', () => {
           event: 'Conversation Turn',
           session_id: session.sessionId,
           conversation_id: 'conv-123',
-          turn_analysis: {
-            system: {
-              actions: [
-                {
-                  action: 'Attribute Advised',
-                  slot: 'intent',
-                  values: ['greeting'],
-                },
-              ],
-            },
-            user: {
-              state: {
-                active_intent: 'greeting',
-                requested_slots: [],
-                slot_values: {},
-              },
-              actions: [
-                {
-                  action: 'Attribute Accepted',
-                  slot: 'intent',
-                  values: ['greeting'],
-                },
-              ],
-            },
-          },
         })
       })
     })

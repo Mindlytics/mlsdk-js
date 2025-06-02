@@ -34,8 +34,9 @@ export interface SessionCreateParams {
      */
     debug?: boolean;
 }
-export interface StartSessionParams extends Omit<StartSessionParamsCore, 'id' | 'type' | 'session_id'> {
-    user_id?: string;
+export interface StartSessionParams extends Omit<StartSessionParamsCore, 'id' | 'type' | 'session_id' | 'device_id'> {
+    userId?: string;
+    deviceId?: string;
 }
 /**
  * Usage:

@@ -1,11 +1,6 @@
 import { Session } from '@mindlytics/node-sdk'
 
 async function main() {
-  console.log({
-    projectId: process.env.PROJECT_ID,
-    apiKey: process.env.API_KEY,
-  })
-
   const session = await Session.create({
     projectId: process.env.PROJECT_ID!,
     apiKey: process.env.API_KEY!,
@@ -13,7 +8,7 @@ async function main() {
   })
 
   await session.start({
-    user_id: '123',
+    userId: '123',
   })
 
   await session.withContext(async () => {

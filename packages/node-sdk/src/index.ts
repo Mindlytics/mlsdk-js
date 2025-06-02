@@ -57,8 +57,12 @@ export interface SessionCreateParams {
 }
 
 export interface StartSessionParams
-  extends Omit<StartSessionParamsCore, 'id' | 'type' | 'session_id'> {
-  user_id?: string
+  extends Omit<
+    StartSessionParamsCore,
+    'id' | 'type' | 'session_id' | 'device_id'
+  > {
+  userId?: string
+  deviceId?: string
 }
 
 /**
@@ -94,8 +98,8 @@ export class Session {
 
     if (userId || deviceId) {
       await session.start({
-        user_id: userId,
-        device_id: deviceId,
+        userId,
+        deviceId,
       })
     }
 
@@ -148,18 +152,18 @@ export class Session {
   }
 
   public async start(params: StartSessionParams) {
-    const { user_id, device_id, ...rest } = params
+    const { userId, deviceId, ...rest } = params
 
     if (!this.session_id) {
       this.session_id = crypto.randomUUID()
     }
 
-    if (params.user_id) {
-      this.user_id = params.user_id
+    if (userId) {
+      this.user_id = userId
     }
 
-    if (params.device_id) {
-      this.device_id = params.device_id
+    if (deviceId) {
+      this.device_id = deviceId
     }
 
     if (!this.user_id && !this.device_id) {

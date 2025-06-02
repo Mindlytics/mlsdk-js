@@ -11,7 +11,10 @@ npm install @mindlytics/node-sdk
 ```ts
 import { Session } from '@mindlytics/node-sdk'
 
-const session = Session.create({ projectId: 'your-project-id', apiKey: 'your-api-key' })
+const session = Session.create({
+  projectId: 'your-project-id',
+  apiKey: 'your-api-key',
+})
 
 session.start({
   user_id: '123',
@@ -23,18 +26,22 @@ session.start({
 The SDK provides a context system using `AsyncLocalStorage` that allows you to access the session throughout your application code. This is particularly useful for tracking LLM interactions and tool calls.
 
 ```ts
-import { openai } from '@ai-sdk/openai';
-import { serve } from '@hono/node-server';
-import { streamText, createTool } from 'ai';
-import { z } from 'zod';
-import { Hono } from 'hono';
-import { stream } from 'hono/streaming';
-import { Session, useSession } from '@mindlytics/node-sdk';
+import { openai } from '@ai-sdk/openai'
+import { serve } from '@hono/node-server'
+import { streamText, createTool } from 'ai'
+import { z } from 'zod'
+import { Hono } from 'hono'
+import { stream } from 'hono/streaming'
+import { Session, useSession } from '@mindlytics/node-sdk'
 
 const app = new Hono()
 
 app.post('/chat', async (c) => {
-  const session = Session.create({ projectId: 'your-project-id', apiKey: 'your-api-key', userId: c.get('userId') })
+  const session = Session.create({
+    projectId: 'your-project-id',
+    apiKey: 'your-api-key',
+    user_id: c.get('userId'),
+  })
 
   session.start()
 
@@ -43,9 +50,9 @@ app.post('/chat', async (c) => {
       model: openai('gpt-4o'),
       prompt: 'How is the weather in Tokyo?',
       tools: [weatherTool],
-    });
+    })
 
-    return stream(c, stream => stream.pipe(result.toDataStream()))
+    return stream(c, (stream) => stream.pipe(result.toDataStream()))
   })
 })
 
@@ -68,8 +75,12 @@ const weatherTool = createTool({
 })
 ```
 
+## Serverless
 
+On serverless platforms like Vercel or Cloudflare, you can use the `flush` method to ensure all events are sent before the function ends.
 
+```ts
+import { waitUntil } from '@vercel/functions'
 
-
-
+waitUntil(session.flush())
+```
