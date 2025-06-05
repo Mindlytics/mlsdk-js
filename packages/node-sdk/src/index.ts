@@ -157,7 +157,7 @@ export class Session {
     return this.device_id
   }
 
-  public async start(params: StartSessionParams) {
+  public async start(params: StartSessionParams = {}) {
     const { userId, deviceId, ...rest } = params
 
     if (this.session_id) {
@@ -189,7 +189,7 @@ export class Session {
     return this.session_id
   }
 
-  public async end(params: Omit<EndSessionParams, 'session_id'>) {
+  public async end(params: Omit<EndSessionParams, 'session_id'> = {}) {
     if (!this.session_id) {
       throw new Error('Session not started')
     }
@@ -252,14 +252,16 @@ export class Session {
   }
 
   public async startConversation(
-    params: Omit<StartConversationParams, 'session_id'>,
+    params: Omit<StartConversationParams, 'session_id' | 'conversation_id'> & {
+      conversationId?: string
+    } = {},
   ) {
     if (!this.session_id) {
       throw new Error('Session not started')
     }
 
-    if (params.conversation_id) {
-      this.conversation_id = params.conversation_id
+    if (params.conversationId) {
+      this.conversation_id = params.conversationId
     } else {
       this.conversation_id = crypto.randomUUID()
     }

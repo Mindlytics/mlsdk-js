@@ -7,9 +7,11 @@ async function main() {
     debug: true,
   })
 
-  await session.start({
+  const sessionId = await session.start({
     userId: '123',
   })
+
+  console.log('Session ID:', sessionId)
 
   await session.withContext(async () => {
     await toolCall()
