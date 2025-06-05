@@ -17,7 +17,7 @@ const session = Session.create({
   deviceId: 'your-device-id',
 })
 
-session.start({
+const sessionId = session.start({
   userId: '123',
 })
 
