@@ -14,12 +14,40 @@ import { Session } from '@mindlytics/node-sdk'
 const session = Session.create({
   projectId: 'your-project-id',
   apiKey: 'your-api-key',
+  deviceId: 'your-device-id',
 })
 
 session.start({
-  user_id: '123',
+  userId: '123',
+})
+
+session.track({
+  event: 'File Uploaded',
 })
 ```
+
+### Continue an existing session
+
+In case a session exists over multiple requests you can pass an existing session id, without calling `session.start`.
+
+```ts
+import { Session } from '@mindlytics/node-sdk'
+
+const session = Session.create({
+  projectId: 'your-project-id',
+  apiKey: 'your-api-key',
+  deviceId: 'your-device-id',
+  sessionId: 'session-id',
+})
+
+session.track({
+  event: 'File Uploaded',
+})
+```
+
+### Ending a session
+
+To end a session call `session.end()`, this will end any active conversation and flush any pending requests in the internal queue.
 
 ## Context
 
@@ -33,17 +61,20 @@ import { z } from 'zod'
 import { Hono } from 'hono'
 import { stream } from 'hono/streaming'
 import { Session, useSession } from '@mindlytics/node-sdk'
+import { authMiddleware } from './auth.middleware.ts'
 
 const app = new Hono()
+
+app.use(authMiddleware)
 
 app.post('/chat', async (c) => {
   const session = Session.create({
     projectId: 'your-project-id',
     apiKey: 'your-api-key',
-    user_id: c.get('userId'),
+    userId: c.get('userId'),
   })
 
-  session.start()
+  await session.start()
 
   return session.withContext(async () => {
     const result = streamText({
@@ -77,10 +108,14 @@ const weatherTool = createTool({
 
 ## Serverless
 
-On serverless platforms like Vercel or Cloudflare, you can use the `flush` method to ensure all events are sent before the function ends.
+On serverless platforms like Vercel or Cloudflare, you can use the `session.end()` or `session.flush()` method to ensure all events are sent to the Mindlytics platform before the function execution ends.
 
 ```ts
 import { waitUntil } from '@vercel/functions'
 
-waitUntil(session.flush())
+waitUntil(session.end()) // End the entire session.
+
+// or
+
+waitUntil(session.flush()) // Only flush the pending events and continue the session in another request.
 ```

@@ -1,11 +1,6 @@
 import { createClient, type Client } from './fetch.ts'
 import type { paths } from './schema.gen.ts'
 import { EventQueue, QueueOptions } from './queue.ts'
-import type {
-  ClientMethod,
-  FetchResponse,
-  MaybeOptionalInit,
-} from 'openapi-fetch'
 import type { EventPaths } from './schema.ts'
 
 export interface MindlyticsOptions {
@@ -13,9 +8,7 @@ export interface MindlyticsOptions {
   projectId: string
   baseUrl?: string
   debug?: boolean
-  queue?: QueueOptions & {
-    enabled?: boolean
-  }
+  queue?: QueueOptions
 }
 
 export class MindlyticsClient<
@@ -23,7 +16,7 @@ export class MindlyticsClient<
 > {
   private baseUrl: string = 'https://app-staging.mindlytics.ai/bc/v1'
   private client: Client
-  private eventQueue: EventQueue | null = null
+  private eventQueue: EventQueue
 
   constructor(private options: TOptions) {
     if (options.baseUrl) {
@@ -59,13 +52,10 @@ export class MindlyticsClient<
       })
     }
 
-    // Initialize queue if enabled
-    if (options.queue?.enabled !== false) {
-      this.eventQueue = new EventQueue(this.client, {
-        ...options.queue,
-        debug: options.debug,
-      })
-    }
+    this.eventQueue = new EventQueue(this.client, {
+      ...options.queue,
+      debug: options.debug,
+    })
   }
 
   private get headers() {
@@ -86,9 +76,7 @@ export class MindlyticsClient<
    * Useful before serverless function shutdown
    */
   async flush(): Promise<void> {
-    if (this.eventQueue) {
-      await this.eventQueue.flush()
-    }
+    await this.eventQueue.flush()
   }
 
   /**
@@ -97,35 +85,14 @@ export class MindlyticsClient<
   private makeRequest<
     TPath extends Extract<keyof EventPaths, string>,
     Body extends EventPaths[TPath]['post']['requestBody']['content']['application/json'],
-  >(
-    path: TPath,
-    body: Body,
-  ): Promise<
-    TOptions['queue'] extends { enabled: false }
-      ? FetchResponse<
-          paths[TPath]['post'],
-          MaybeOptionalInit<paths[TPath], 'post'>,
-          'application/json'
-        >
-      : void
-  > {
-    if (this.eventQueue && this.options.queue?.enabled !== false) {
-      this.eventQueue.enqueue({
-        path,
-        body,
-        params: {
-          header: this.headers,
-        },
-      })
-      return Promise.resolve() as any
-    }
-
-    return this.client.request('post', path, {
+  >(path: TPath, body: Body) {
+    this.eventQueue.enqueue({
+      path,
       body,
       params: {
         header: this.headers,
       },
-    } as any) as any
+    })
   }
 
   async startSession(params: StartSessionParams) {
