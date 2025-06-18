@@ -5,10 +5,13 @@
   "scripts": {
     "build": "tsc"
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "ml-dev": "./src/index.ts",
+      "require": "./dist/index.js",
       "import": "./dist/index.js"
     }
   },

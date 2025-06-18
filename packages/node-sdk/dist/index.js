@@ -13,24 +13,27 @@ import { MindlyticsClient } from '@mindlytics/core';
  */
 export class Session {
     options;
-    session_id;
+    session_id = undefined;
+    conversation_id = undefined;
     user_id = undefined;
     device_id = undefined;
     client;
     constructor(options) {
         this.options = options;
         const { sessionId, ...clientOptions } = options;
-        this.session_id = sessionId || crypto.randomUUID();
+        if (sessionId) {
+            this.session_id = sessionId;
+        }
         this.client = new MindlyticsClient(clientOptions);
     }
     static async create(params) {
         const { userId, deviceId, ...sessionOptions } = params;
         const session = new Session(sessionOptions);
-        if (userId || deviceId) {
-            await session.start({
-                userId,
-                deviceId,
-            });
+        if (userId) {
+            session.user_id = userId;
+        }
+        if (deviceId) {
+            session.device_id = deviceId;
         }
         return session;
     }
@@ -74,11 +77,13 @@ export class Session {
     get deviceId() {
         return this.device_id;
     }
-    async start(params) {
+    async start(params = {}) {
         const { userId, deviceId, ...rest } = params;
-        if (!this.session_id) {
-            this.session_id = crypto.randomUUID();
+        if (this.session_id) {
+            console.warn('Session already started, skipping start');
+            return this.session_id;
         }
+        this.session_id = crypto.randomUUID();
         if (userId) {
             this.user_id = userId;
         }
@@ -88,56 +93,103 @@ export class Session {
         if (!this.user_id && !this.device_id) {
             throw new Error('User ID or device ID is required');
         }
-        const response = await this.client.startSession({
+        await this.client.startSession({
             ...rest,
             id: this.user_id,
             device_id: this.device_id,
             session_id: this.session_id,
         });
-        return response;
+        return this.session_id;
     }
-    async end() {
+    async end(params = {}) {
+        if (!this.session_id) {
+            throw new Error('Session not started');
+        }
+        if (this.conversation_id) {
+            await this.endConversation({
+                attributes: params.attributes,
+                timestamp: params.timestamp,
+            });
+        }
         await this.client.endSession({
+            ...params,
             session_id: this.session_id,
         });
+        this.session_id = undefined;
+        this.conversation_id = undefined;
+        await this.client.flush();
     }
     async flush() {
         await this.client.flush();
     }
     async track(params) {
+        if (!this.session_id) {
+            throw new Error('Session not started');
+        }
         await this.client.trackEvent({
             session_id: this.session_id,
             ...params,
         });
     }
     async identify(params) {
+        if (!this.session_id) {
+            throw new Error('Session not started');
+        }
         await this.client.identify({
             session_id: this.session_id,
             ...params,
         });
     }
     async alias(params) {
+        if (!this.session_id) {
+            throw new Error('Session not started');
+        }
         await this.client.alias({
             session_id: this.session_id,
             ...params,
         });
     }
-    async startConversation(params) {
+    async startConversation(params = {}) {
+        if (!this.session_id) {
+            throw new Error('Session not started');
+        }
+        if (params.conversationId) {
+            this.conversation_id = params.conversationId;
+        }
+        else {
+            this.conversation_id = crypto.randomUUID();
+        }
         await this.client.startConversation({
-            session_id: this.session_id,
             ...params,
+            session_id: this.session_id,
+            conversation_id: this.conversation_id,
         });
     }
     async endConversation(params) {
+        if (!this.session_id) {
+            throw new Error('Session not started');
+        }
+        if (!this.conversation_id) {
+            throw new Error('Conversation not started');
+        }
         await this.client.endConversation({
-            session_id: this.session_id,
             ...params,
+            session_id: this.session_id,
+            conversation_id: this.conversation_id,
         });
+        this.conversation_id = undefined;
     }
     async trackConversationTurn(params) {
+        if (!this.session_id) {
+            throw new Error('Session not started');
+        }
+        if (!this.conversation_id) {
+            throw new Error('Conversation not started');
+        }
         await this.client.trackConversationTurn({
-            session_id: this.session_id,
             ...params,
+            session_id: this.session_id,
+            conversation_id: this.conversation_id,
         });
     }
 }
