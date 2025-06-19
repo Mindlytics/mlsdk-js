@@ -1,4 +1,4 @@
-import type { EndConversationParams, MindlyticsOptions, StartConversationParams, StartSessionParams as StartSessionParamsCore, TrackConversationTurnParams, TrackEventParams, UserAliasParams, UserIdentifyParams } from '@mindlytics/core';
+import type { EndConversationParams, EndSessionParams, MindlyticsOptions, StartConversationParams, StartSessionParams as StartSessionParamsCore, TrackConversationTurnParams, TrackEventParams, UserAliasParams, UserIdentifyParams } from '@mindlytics/core';
 export interface SessionOptions extends MindlyticsOptions {
     sessionId?: string;
 }
@@ -51,6 +51,7 @@ export interface StartSessionParams extends Omit<StartSessionParamsCore, 'id' | 
 export declare class Session {
     private options;
     private session_id;
+    private conversation_id;
     private user_id;
     private device_id;
     private client;
@@ -83,18 +84,20 @@ export declare class Session {
      * }
      */
     withContext<T>(fn: () => Promise<T>): Promise<T>;
-    get sessionId(): string;
+    get sessionId(): string | undefined;
     get userId(): string | undefined;
     get deviceId(): string | undefined;
-    start(params: StartSessionParams): Promise<void>;
-    end(): Promise<void>;
+    start(params?: StartSessionParams): Promise<string>;
+    end(params?: Omit<EndSessionParams, 'session_id'>): Promise<void>;
     flush(): Promise<void>;
     track(params: Omit<TrackEventParams, 'session_id' | 'type'>): Promise<void>;
     identify(params: Omit<UserIdentifyParams, 'session_id' | 'type'>): Promise<void>;
     alias(params: Omit<UserAliasParams, 'session_id' | 'type'>): Promise<void>;
-    startConversation(params: Omit<StartConversationParams, 'session_id'>): Promise<void>;
-    endConversation(params: Omit<EndConversationParams, 'session_id' | 'type'>): Promise<void>;
-    trackConversationTurn(params: Omit<TrackConversationTurnParams, 'session_id' | 'type'>): Promise<void>;
+    startConversation(params?: Omit<StartConversationParams, 'session_id' | 'conversation_id'> & {
+        conversationId?: string;
+    }): Promise<void>;
+    endConversation(params: Omit<EndConversationParams, 'session_id' | 'type' | 'conversation_id'>): Promise<void>;
+    trackConversationTurn(params: Omit<TrackConversationTurnParams, 'session_id' | 'type' | 'conversation_id'>): Promise<void>;
 }
 /**
  * Returns the current session context.

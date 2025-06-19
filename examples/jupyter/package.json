@@ -1,0 +1,13 @@
+{
+  "name": "mlsdk-jupyter-notebooks",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@mindlytics/node-sdk": "workspace:*"
+  },
+  "devDependencies": {
+    "tslab": "^1.0.22",
+    "tsx": "^4.19.4"
+  }
+}

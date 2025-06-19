@@ -4,7 +4,7 @@ export class MindlyticsClient {
     options;
     baseUrl = 'https://app-staging.mindlytics.ai/bc/v1';
     client;
-    eventQueue = null;
+    eventQueue;
     constructor(options) {
         this.options = options;
         if (options.baseUrl) {
@@ -27,13 +27,10 @@ export class MindlyticsClient {
                 },
             });
         }
-        // Initialize queue if enabled
-        if (options.queue?.enabled !== false) {
-            this.eventQueue = new EventQueue(this.client, {
-                ...options.queue,
-                debug: options.debug,
-            });
-        }
+        this.eventQueue = new EventQueue(this.client, {
+            ...options.queue,
+            debug: options.debug,
+        });
     }
     get headers() {
         return {
@@ -51,25 +48,14 @@ export class MindlyticsClient {
      * Useful before serverless function shutdown
      */
     async flush() {
-        if (this.eventQueue) {
-            await this.eventQueue.flush();
-        }
+        await this.eventQueue.flush();
     }
     /**
      * Make a direct API call or queue it based on configuration
      */
     makeRequest(path, body) {
-        if (this.eventQueue && this.options.queue?.enabled !== false) {
-            this.eventQueue.enqueue({
-                path,
-                body,
-                params: {
-                    header: this.headers,
-                },
-            });
-            return Promise.resolve();
-        }
-        return this.client.request('post', path, {
+        this.eventQueue.enqueue({
+            path,
             body,
             params: {
                 header: this.headers,
