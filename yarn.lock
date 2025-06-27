@@ -315,9 +315,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@mindlytics/core@workspace:packages/core"
   dependencies:
+    "@types/ws": "npm:^8"
     openapi-fetch: "npm:^0.14.0"
     openapi-typescript: "npm:^7.8.0"
     typescript: "npm:^5.8.3"
+    ws: "npm:^8.18.2"
   languageName: unknown
   linkType: soft
 
@@ -720,6 +722,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/ws@npm:^8":
+  version: 8.18.1
+  resolution: "@types/ws@npm:8.18.1"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10c0/61aff1129143fcc4312f083bc9e9e168aa3026b7dd6e70796276dcfb2c8211c4292603f9c4864fae702f2ed86e4abd4d38aa421831c2fd7f856c931a481afbab
+  languageName: node
+  linkType: hard
+
 "@vitest/expect@npm:3.1.4":
   version: 3.1.4
   resolution: "@vitest/expect@npm:3.1.4"
@@ -881,6 +892,15 @@ __metadata:
   checksum: 10c0/9308baf0a7e4838a82bbfd11e01b1cb0f0cf2893bc1676c27c2a8c0e70cbae1c59120c3268517a8ae7fb6376b4639ef81ca22582611dbee4ed28df945134aaee
   languageName: node
   linkType: hard
+
+"basic-example-ws@workspace:examples/basic-ws":
+  version: 0.0.0-use.local
+  resolution: "basic-example-ws@workspace:examples/basic-ws"
+  dependencies:
+    "@mindlytics/node-sdk": "workspace:*"
+    tsx: "npm:^4.19.4"
+  languageName: unknown
+  linkType: soft
 
 "basic-example@workspace:examples/basic":
   version: 0.0.0-use.local
@@ -2834,6 +2854,21 @@ __metadata:
   version: 1.0.2
   resolution: "wrappy@npm:1.0.2"
   checksum: 10c0/56fece1a4018c6a6c8e28fbc88c87e0fbf4ea8fd64fc6c63b18f4acc4bd13e0ad2515189786dd2c30d3eec9663d70f4ecf699330002f8ccb547e4a18231fc9f0
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.18.2":
+  version: 8.18.2
+  resolution: "ws@npm:8.18.2"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10c0/4b50f67931b8c6943c893f59c524f0e4905bbd183016cfb0f2b8653aa7f28dad4e456b9d99d285bbb67cca4fedd9ce90dfdfaa82b898a11414ebd66ee99141e4
   languageName: node
   linkType: hard
 

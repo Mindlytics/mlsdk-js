@@ -1,3 +1,4 @@
+import { MindlyticsClient } from '@mindlytics/core';
 import type { EndConversationParams, EndSessionParams, MindlyticsOptions, StartConversationParams, StartSessionParams as StartSessionParamsCore, TrackConversationTurnParams, TrackEventParams, UserAliasParams, UserIdentifyParams } from '@mindlytics/core';
 export interface SessionOptions extends MindlyticsOptions {
     sessionId?: string;
@@ -54,7 +55,7 @@ export declare class Session {
     private conversation_id;
     private user_id;
     private device_id;
-    private client;
+    client: MindlyticsClient;
     constructor(options: SessionOptions);
     static create(params: SessionCreateParams): Promise<Session>;
     static use(): Session;

@@ -1,10 +1,12 @@
 import { createClient } from "./fetch.js";
 import { EventQueue } from "./queue.js";
+import { WebSocketClient } from "./ws.js";
 export class MindlyticsClient {
     options;
     baseUrl = 'https://app-staging.mindlytics.ai/bc/v1';
     client;
     eventQueue;
+    wsClient = null;
     constructor(options) {
         this.options = options;
         if (options.baseUrl) {
@@ -61,6 +63,22 @@ export class MindlyticsClient {
                 header: this.headers,
             },
         });
+    }
+    async startListening(onEvent, onError) {
+        if (!onError) {
+            onError = { callback: async (error) => { }, data: undefined };
+        }
+        if (!onEvent) {
+            onEvent = { callback: async (event) => { }, data: undefined };
+        }
+        // derive the ws endpoint from the base URL
+        let wsEndpoint = this.baseUrl.replace(/^http/, 'ws');
+        wsEndpoint = wsEndpoint.replace('//app/', '//wss/');
+        // To handle localhost
+        wsEndpoint = wsEndpoint.replace(':300', ':400');
+        wsEndpoint = wsEndpoint.replace('/bc/v1', '');
+        this.wsClient = new WebSocketClient(this.client, wsEndpoint, onError, onEvent);
+        return this.wsClient.startListening();
     }
     async startSession(params) {
         return this.makeRequest('/events/event/start-session', {

@@ -1,5 +1,9 @@
 import type { paths } from './schema.gen.ts';
 import { QueueOptions } from './queue.ts';
+import { MLEventHandler, MLErrorHandler } from './ws.ts';
+export type { MLErrorHandler } from './ws.ts';
+export type { MLEventHandler } from './ws.ts';
+export type { MLEvent } from './ws.ts';
 export interface MindlyticsOptions {
     apiKey: string;
     projectId: string;
@@ -12,6 +16,7 @@ export declare class MindlyticsClient<TOptions extends MindlyticsOptions = Mindl
     private baseUrl;
     private client;
     private eventQueue;
+    private wsClient;
     constructor(options: TOptions);
     private get headers();
     private debug;
@@ -24,6 +29,7 @@ export declare class MindlyticsClient<TOptions extends MindlyticsOptions = Mindl
      * Make a direct API call or queue it based on configuration
      */
     private makeRequest;
+    startListening(onEvent?: MLEventHandler, onError?: MLErrorHandler): Promise<void>;
     startSession(params: StartSessionParams): Promise<void>;
     endSession(params: EndSessionParams): Promise<void>;
     trackEvent(params: TrackEventParams): Promise<void>;

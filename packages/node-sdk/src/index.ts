@@ -85,7 +85,7 @@ export class Session {
 
   private device_id: string | undefined = undefined
 
-  private client: MindlyticsClient
+  public client: MindlyticsClient
 
   constructor(private options: SessionOptions) {
     const { sessionId, ...clientOptions } = options
