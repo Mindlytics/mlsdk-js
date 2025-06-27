@@ -120,6 +120,25 @@ waitUntil(session.end()) // End the entire session.
 waitUntil(session.flush()) // Only flush the pending events and continue the session in another request.
 ```
 
+## Receiving Events and Errors from Mindlytics
+
+```js
+import {MLEvent} from '@mindlytics/core'
+
+session.client.startListening(
+    onError: {
+        callback: (error: Error, data: any) => {...},
+        data: yourData
+    },
+    onEvent: {
+        callback: (event: MLEvent, data: any) => {...},
+        data: yourData
+    }
+)
+```
+
+Any `yourData` that you supply will be sent to your handlers as a second argument.  You can use this to gain access to contextual information if needed.  
+
 ## Examples
 
 ### Jupyter Notebook Examples
