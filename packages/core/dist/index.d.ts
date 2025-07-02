@@ -46,7 +46,7 @@ export declare class MindlyticsClient<TOptions extends MindlyticsOptions = Mindl
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": {
                     id?: string;
@@ -78,7 +78,13 @@ export declare class MindlyticsClient<TOptions extends MindlyticsOptions = Mindl
             };
         };
     }, {
-        body: never;
+        body: {
+            id?: string;
+            device_id?: string;
+            traits?: {
+                [key: string]: string | number | boolean;
+            };
+        };
     }, `${string}/${string}`>>;
     alias(params: UserAliasParams): Promise<import("openapi-fetch").FetchResponse<{
         parameters: {
@@ -87,7 +93,7 @@ export declare class MindlyticsClient<TOptions extends MindlyticsOptions = Mindl
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": {
                     id: string;
@@ -116,7 +122,10 @@ export declare class MindlyticsClient<TOptions extends MindlyticsOptions = Mindl
             };
         };
     }, {
-        body: never;
+        body: {
+            id: string;
+            previous_id: string;
+        };
     }, `${string}/${string}`>>;
 }
 export type StartSessionParams = Omit<paths['/events/event/start-session']['post']['requestBody']['content']['application/json'], 'type'>;
@@ -128,13 +137,5 @@ export type StartConversationParams = Omit<paths['/events/event/start-conversati
 export type EndConversationParams = Omit<paths['/events/event/end-conversation']['post']['requestBody']['content']['application/json'], 'type' | 'event'>;
 export type TrackConversationTurnParams = Omit<paths['/events/event/conversation-turn']['post']['requestBody']['content']['application/json'], 'type' | 'event'>;
 export type TrackConversationUsageParams = Omit<paths['/events/event/conversation-usage']['post']['requestBody']['content']['application/json'], 'type' | 'event'>;
-export type UserIdentifyParams = paths['/user/identify']['post']['requestBody'] extends {
-    content: {
-        'application/json': infer T;
-    };
-} ? T : never;
-export type UserAliasParams = paths['/user/alias']['post']['requestBody'] extends {
-    content: {
-        'application/json': infer T;
-    };
-} ? T : never;
+export type UserIdentifyParams = paths['/user/identify']['post']['requestBody']['content']['application/json'];
+export type UserAliasParams = paths['/user/alias']['post']['requestBody']['content']['application/json'];

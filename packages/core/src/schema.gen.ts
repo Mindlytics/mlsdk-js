@@ -4740,6 +4740,51 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/db/import_demo_data": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Import demo data
+         * @description Import demo data into the database.  This is used for testing and development purposes.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response.  A JSON object with a status of "ok". */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /**
+                             * Status
+                             * @description The status of the import operation
+                             */
+                            status: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/db/{collection}/{op}": {
         parameters: {
             query?: never;
@@ -6693,7 +6738,7 @@ export interface paths {
                                 /** @description Session end date */
                                 ended_at: string;
                                 /** @description Session duration in milliseconds */
-                                duration: number;
+                                duration?: number;
                                 /** @description Session attributes */
                                 attributes: {
                                     [key: string]: string | number | boolean;
@@ -6796,7 +6841,7 @@ export interface paths {
                                 /** @description Conversation start date */
                                 started_at: string;
                                 /** @description Conversation duration in milliseconds */
-                                duration: number;
+                                duration?: number;
                                 /** @description Sentiment of the conversation */
                                 sentiment: string;
                                 /** @description Summary of the conversation */
