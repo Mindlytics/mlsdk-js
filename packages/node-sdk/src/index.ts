@@ -10,8 +10,8 @@ import type {
   StartSessionParams as StartSessionParamsCore,
   TrackConversationTurnParams,
   TrackEventParams,
-  UserAliasParams,
-  UserIdentifyParams,
+  SessionUserAliasParams,
+  SessionUserIdentifyParams,
 } from '@mindlytics/core'
 
 export interface SessionOptions extends MindlyticsOptions {
@@ -228,24 +228,24 @@ export class Session {
   }
 
   public async identify(
-    params: Omit<UserIdentifyParams, 'session_id' | 'type'>,
+    params: Omit<SessionUserIdentifyParams, 'session_id' | 'type'>,
   ) {
     if (!this.session_id) {
       throw new Error('Session not started')
     }
 
-    await this.client.identify({
+    await this.client.sessionUserIdentify({
       session_id: this.session_id,
       ...params,
     })
   }
 
-  public async alias(params: Omit<UserAliasParams, 'session_id' | 'type'>) {
+  public async alias(params: Omit<SessionUserAliasParams, 'session_id' | 'type'>) {
     if (!this.session_id) {
       throw new Error('Session not started')
     }
 
-    await this.client.alias({
+    await this.client.sessionUserAlias({
       session_id: this.session_id,
       ...params,
     })
@@ -253,15 +253,15 @@ export class Session {
 
   public async startConversation(
     params: Omit<StartConversationParams, 'session_id' | 'conversation_id'> & {
-      conversationId?: string
+      conversation_id?: string
     } = {},
   ) {
     if (!this.session_id) {
       throw new Error('Session not started')
     }
 
-    if (params.conversationId) {
-      this.conversation_id = params.conversationId
+    if (params.conversation_id) {
+      this.conversation_id = params.conversation_id
     } else {
       this.conversation_id = crypto.randomUUID()
     }

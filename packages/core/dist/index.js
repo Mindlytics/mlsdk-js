@@ -98,13 +98,13 @@ export class MindlyticsClient {
             ...params,
         });
     }
-    async identify(params) {
+    async sessionUserIdentify(params) {
         return this.makeRequest('/events/event/identify', {
             type: 'identify',
             ...params,
         });
     }
-    async alias(params) {
+    async sessionUserAlias(params) {
         return this.makeRequest('/events/event/alias', {
             type: 'alias',
             ...params,
@@ -136,6 +136,16 @@ export class MindlyticsClient {
             type: 'track',
             event: 'Conversation Usage',
             ...params,
+        });
+    }
+    async identify(params) {
+        return this.client.POST('/user/identify', {
+            body: params,
+        });
+    }
+    async alias(params) {
+        return this.client.POST('/user/alias', {
+            body: params,
         });
     }
 }

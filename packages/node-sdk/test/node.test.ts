@@ -38,7 +38,7 @@ describe('Session', () => {
         projectId: 'test-project',
       })
       expect(session).toBeInstanceOf(Session)
-      expect(session.sessionId).toMatch(/^[a-f0-9-]{36}$/) // UUID format
+      expect(session.sessionId).toBeUndefined()
       expect(session.userId).toBeUndefined()
     })
 
@@ -182,6 +182,23 @@ describe('Session', () => {
         expect(sessionWithoutId.sessionId).toMatch(/^[a-f0-9-]{36}$/)
       })
     })
+  })
+
+  describe('event tracking', () => {
+    let session: Session
+
+    beforeEach(async () => {
+      session = await Session.create(defaultOptions)
+      await session.start({ deviceId: 'device-321' })
+      server.use(
+        http.post(
+          'http://localhost:3000/v1/events/event/start-session',
+          async () => {
+            return HttpResponse.json({ success: true })
+          },
+        ),
+      )
+    })
 
     describe('end', () => {
       it('should end session', async () => {
@@ -197,13 +214,19 @@ describe('Session', () => {
           ),
         )
 
+        expect(session.sessionId).toMatch(/^[a-f0-9-]{36}$/)
+        expect(session.sessionId).toBe(session.sessionId)
+        const sessionId = session.sessionId
+
         await session.end()
+
+        expect(session.sessionId).toBeUndefined()
 
         await session.flush()
 
         expect(requestBody).toMatchObject({
           type: 'end_session',
-          session_id: session.sessionId,
+          session_id: sessionId,
         })
       })
     })
@@ -316,8 +339,15 @@ describe('Session', () => {
 
     beforeEach(async () => {
       session = await Session.create(defaultOptions)
+      await session.start({ deviceId: 'device-321' })
 
       server.use(
+        http.post(
+          'http://localhost:3000/v1/events/event/start-session',
+          () => {
+            return HttpResponse.json({ success: true })
+          },
+        ),
         http.post(
           'http://localhost:3000/v1/events/event/start-conversation',
           () => {
@@ -378,6 +408,51 @@ describe('Session', () => {
         })
       })
     })
+  })
+
+  describe('conversation management', () => {
+    let session: Session
+    beforeEach(async () => {
+      session = await Session.create(defaultOptions)
+      await session.start({ deviceId: 'device-321' })
+      await session.startConversation({
+        conversation_id: 'conv-123',
+      })
+
+      server.use(
+        http.post(
+          'http://localhost:3000/v1/events/event/start-session',
+          () => {
+            return HttpResponse.json({ success: true })
+          },
+        ),
+        http.post(
+          'http://localhost:3000/v1/events/event/start-conversation',
+          () => {
+            return HttpResponse.json({ success: true })
+          },
+        ),
+        http.post(
+          'http://localhost:3000/v1/events/event/end-conversation',
+          () => {
+            return HttpResponse.json({ success: true })
+          },
+        ),
+        http.post(
+          'http://localhost:3000/v1/events/event/conversation-turn',
+          () => {
+            return HttpResponse.json({ success: true })
+          },
+        ),
+        http.post('http://localhost:3000/v1/events/batch', () => {
+          return HttpResponse.json({ success: true })
+        }),
+      )
+
+      await session.startConversation({
+        conversation_id: 'conv-123',
+      })
+    })
 
     describe('endConversation', () => {
       it('should end conversation with session ID', async () => {
@@ -393,9 +468,7 @@ describe('Session', () => {
           ),
         )
 
-        await session.endConversation({
-          conversation_id: 'conv-123',
-        })
+        await session.endConversation({})
 
         await session.flush()
 
@@ -423,7 +496,6 @@ describe('Session', () => {
         )
 
         await session.trackConversationTurn({
-          conversation_id: 'conv-123',
           properties: {
             assistant: 'Hello! How can I help you?',
             user: 'Hi there!',
@@ -526,8 +598,8 @@ describe('Session', () => {
           sessionId: 'inner-session',
         })
 
-        let outerSessionId: string | null = null
-        let innerSessionId: string | null = null
+        let outerSessionId: string | undefined = undefined
+        let innerSessionId: string | undefined = undefined
 
         await outerSession.withContext(async () => {
           outerSessionId = useSession().sessionId
@@ -625,8 +697,12 @@ describe('Session', () => {
 
     beforeEach(async () => {
       session = await Session.create(defaultOptions)
+      await session.start({ deviceId: 'device-321' })
 
       server.use(
+        http.post('http://localhost:3000/v1/events/event/start-session', () => {
+          return HttpResponse.json({ success: true })
+        }),
         http.post('http://localhost:3000/v1/events/event/track', () => {
           return HttpResponse.json({ success: true })
         }),

@@ -25,7 +25,6 @@ describe('MindlyticsClient', () => {
     projectId: 'test-project-id',
     baseUrl: 'http://localhost:3000/v1',
     debug: false,
-    queue: { enabled: true },
   } satisfies MindlyticsOptions
 
   beforeEach(() => {
@@ -71,7 +70,7 @@ describe('MindlyticsClient', () => {
     it('should initialize queue when queue.enabled is not false', () => {
       const client = new MindlyticsClient({
         ...defaultOptions,
-        queue: { enabled: true, batchSize: 10 },
+        queue: { batchSize: 10 },
       })
       expect(client).toBeInstanceOf(MindlyticsClient)
     })
@@ -84,6 +83,63 @@ describe('MindlyticsClient', () => {
       client = new MindlyticsClient(defaultOptions)
     })
 
+    describe('identify', () => {
+      it('should make a POST request to identify endpoint', async () => {
+        const mockResponse = { success: true }
+        server.use(
+          http.post(
+            'http://localhost:3000/v1/user/identify',
+            async ({ request }) => {
+              try {
+                const body = (await request.json()) as any
+                expect(body).toEqual({ id: 'user-123', traits: { email: 'test@example.com' } })
+                return HttpResponse.json(mockResponse)
+              } catch (error) {
+                console.error('Error in identify handler:', error)
+                throw error
+              }
+            },
+          ),
+        )
+        await expect(
+          client.identify({
+            id: 'user-123',
+            traits: { email: 'test@example.com' },
+          }),
+        ).resolves.not.toThrow()
+
+      })
+    })
+
+    describe('alias', () => {
+      it('should make a POST request to alias endpoint', async () => {
+        const mockResponse = { success: true }
+
+        server.use(
+          http.post(
+            'http://localhost:3000/v1/user/alias',
+            async ({ request }) => {
+              try {
+                const body = (await request.json()) as any
+                expect(body).toEqual({ id: 'user-123', previous_id: 'anonymous-456' })
+                return HttpResponse.json(mockResponse)
+              } catch (error) {
+                console.error('Error in alias handler:', error)
+                throw error
+              }
+            },
+          ),
+        )
+
+        await expect(
+          client.alias({
+            id: 'user-123',
+            previous_id: 'anonymous-456',
+          }),
+        ).resolves.not.toThrow()
+      })
+    })
+
     describe('startSession', () => {
       it('should make a POST request to start-session endpoint', async () => {
         const mockResponse = { success: true, sessionId: 'session-123' }
@@ -92,15 +148,20 @@ describe('MindlyticsClient', () => {
           http.post(
             'http://localhost:3000/v1/events/event/start-session',
             async ({ request }) => {
-              const body = (await request.json()) as any
-              expect(body.type).toBe('start_session')
-              expect(body.user_id).toBe('user-123')
+              try {
+                const body = (await request.json()) as any
+                expect(body.type).toBe('start_session')
+                expect(body.attributes.userId).toBe('user-123')
 
-              const headers = request.headers
-              expect(headers.get('Authorization')).toBe('test-api-key')
-              expect(headers.get('x-app-id')).toBe('test-project-id')
+                const headers = request.headers
+                expect(headers.get('Authorization')).toBe('test-api-key')
+                expect(headers.get('x-app-id')).toBe('test-project-id')
 
-              return HttpResponse.json(mockResponse)
+                return HttpResponse.json(mockResponse)
+              } catch (error) {
+                console.error('Error in startSession handler:', error)
+                throw error
+              }
             },
           ),
         )
@@ -125,11 +186,16 @@ describe('MindlyticsClient', () => {
           http.post(
             'http://localhost:3000/v1/events/event/end-session',
             async ({ request }) => {
-              const body = (await request.json()) as any
-              expect(body.type).toBe('end_session')
-              expect(body.session_id).toBe('session-123')
+              try {
+                const body = (await request.json()) as any
+                expect(body.type).toBe('end_session')
+                expect(body.session_id).toBe('session-123')
 
-              return HttpResponse.json(mockResponse)
+                return HttpResponse.json(mockResponse)
+              } catch (error) {
+                console.error('Error in endSession handler:', error)
+                throw error
+              }
             },
           ),
         )
@@ -150,15 +216,20 @@ describe('MindlyticsClient', () => {
           http.post(
             'http://localhost:3000/v1/events/event/track',
             async ({ request }) => {
-              const body = (await request.json()) as any
-              expect(body.type).toBe('track')
-              expect(body.event).toBe('Button Clicked')
-              expect(body.properties).toEqual({ buttonId: 'submit' })
+              try {
+                const body = (await request.json()) as any
+                expect(body.type).toBe('track')
+                expect(body.event).toBe('Button Clicked')
+                expect(body.properties).toEqual({ buttonId: 'submit' })
 
-              expect(body.session_id).toBe('session-123')
-              expect(body.conversation_id).toBe('conversation-123')
+                expect(body.session_id).toBe('session-123')
+                expect(body.conversation_id).toBe('conversation-123')
 
-              return HttpResponse.json(mockResponse)
+                return HttpResponse.json(mockResponse)
+              } catch (error) {
+                console.error('Error in trackEvent handler:', error)
+                throw error
+              }
             },
           ),
         )
@@ -174,25 +245,29 @@ describe('MindlyticsClient', () => {
       })
     })
 
-    describe('identify', () => {
-      it('should make a POST request to identify endpoint', async () => {
+    describe('session-identify', () => {
+      it('should make a POST request to event identify endpoint', async () => {
         const mockResponse = { success: true }
 
         server.use(
           http.post(
             'http://localhost:3000/v1/events/event/identify',
             async ({ request }) => {
-              const body = (await request.json()) as any
-              expect(body.type).toBe('identify')
-              expect(body.user_id).toBe('user-123')
-              expect(body.traits).toEqual({ email: 'test@example.com' })
+              try {
+                const body = (await request.json()) as any
+                expect(body.type).toBe('identify')
+                expect(body.traits).toEqual({ email: 'test@example.com' })
 
-              return HttpResponse.json(mockResponse)
+                return HttpResponse.json(mockResponse)
+              } catch (error) {
+                console.error('Error in identify handler:', error)
+                throw error
+              }
             },
           ),
         )
 
-        await client.identify({
+        await client.sessionUserIdentify({
           id: 'user-123',
           session_id: 'session-123',
           traits: { email: 'test@example.com' },
@@ -202,25 +277,29 @@ describe('MindlyticsClient', () => {
       })
     })
 
-    describe('alias', () => {
-      it('should make a POST request to alias endpoint', async () => {
+    describe('session-alias', () => {
+      it('should make a POST request to event alias endpoint', async () => {
         const mockResponse = { success: true }
 
         server.use(
           http.post(
             'http://localhost:3000/v1/events/event/alias',
             async ({ request }) => {
-              const body = (await request.json()) as any
-              expect(body.type).toBe('alias')
-              expect(body.user_id).toBe('user-123')
-              expect(body.previous_id).toBe('anonymous-456')
+              try {
+                const body = (await request.json()) as any
+                expect(body.type).toBe('alias')
+                expect(body.previous_id).toBe('anonymous-456')
 
-              return HttpResponse.json(mockResponse)
+                return HttpResponse.json(mockResponse)
+              } catch (error) {
+                console.error('Error in alias handler:', error)
+                throw error
+              }
             },
           ),
         )
 
-        await client.alias({
+        await client.sessionUserAlias({
           id: 'user-123',
           session_id: 'session-123',
           previous_id: 'anonymous-456',
@@ -238,21 +317,26 @@ describe('MindlyticsClient', () => {
           http.post(
             'http://localhost:3000/v1/events/event/start-conversation',
             async ({ request }) => {
-              const body = (await request.json()) as any
-              expect(body.type).toBe('track')
-              expect(body.event).toBe('Conversation Started')
-              expect(body.conversation_id).toBe('conv-123')
-              expect(body.session_id).toBe('session-123')
-              expect(body.user_id).toBe('user-123')
+              try {
+                const body = (await request.json()) as any
+                expect(body.type).toBe('track')
+                expect(body.event).toBe('Conversation Started')
+                expect(body.conversation_id).toBe('conv-123')
+                expect(body.session_id).toBe('session-123')
+                expect(body.attributes.user_id).toBe('user-123')
 
-              return HttpResponse.json(mockResponse)
+                return HttpResponse.json(mockResponse)
+              } catch (error) {
+                console.error('Error in startConversation handler:', error)
+                throw error
+              }
             },
           ),
         )
 
         await client.startConversation({
           conversation_id: 'conv-123',
-          session_id: 'user-123',
+          session_id: 'session-123',
           attributes: {
             user_id: 'user-123',
           },
@@ -270,12 +354,17 @@ describe('MindlyticsClient', () => {
           http.post(
             'http://localhost:3000/v1/events/event/end-conversation',
             async ({ request }) => {
-              const body = (await request.json()) as any
-              expect(body.type).toBe('track')
-              expect(body.event).toBe('Conversation Ended')
-              expect(body.conversation_id).toBe('conv-123')
+              try {
+                const body = (await request.json()) as any
+                expect(body.type).toBe('track')
+                expect(body.event).toBe('Conversation Ended')
+                expect(body.conversation_id).toBe('conv-123')
 
-              return HttpResponse.json(mockResponse)
+                return HttpResponse.json(mockResponse)
+              } catch (error) {
+                console.error('Error in endConversation handler:', error)
+                throw error
+              }
             },
           ),
         )
@@ -297,13 +386,22 @@ describe('MindlyticsClient', () => {
           http.post(
             'http://localhost:3000/v1/events/event/conversation-turn',
             async ({ request }) => {
-              const body = (await request.json()) as any
-              expect(body.type).toBe('track')
-              expect(body.event).toBe('Conversation Turn')
-              expect(body.conversation_id).toBe('conv-123')
-              expect(body.turn_analysis).toBeDefined()
+              try {
+                const body = (await request.json()) as any
+                expect(body.type).toBe('track')
+                expect(body.event).toBe('Conversation Turn')
+                expect(body.conversation_id).toBe('conv-123')
+                expect(body.session_id).toBe('session-123')
+                expect(body.properties).toEqual({
+                  assistant: 'assistant',
+                  user: 'user',
+                })
 
-              return HttpResponse.json(mockResponse)
+                return HttpResponse.json(mockResponse)
+              } catch (error) {
+                console.error('Error in trackConversationTurn handler:', error)
+                throw error
+              }
             },
           ),
         )
@@ -329,17 +427,22 @@ describe('MindlyticsClient', () => {
           http.post(
             'http://localhost:3000/v1/events/event/conversation-usage',
             async ({ request }) => {
-              const body = (await request.json()) as any
-              expect(body.type).toBe('track')
-              expect(body.event).toBe('Conversation Usage')
-              expect(body.conversation_id).toBe('conv-123')
-              expect(body.usage).toEqual({
-                completion_tokens: 20,
-                prompt_tokens: 10,
-                model: 'gpt-3.5-turbo',
-              })
+              try {
+                const body = (await request.json()) as any
+                expect(body.type).toBe('track')
+                expect(body.event).toBe('Conversation Usage')
+                expect(body.conversation_id).toBe('conv-123')
+                expect(body.properties).toEqual({
+                  completion_tokens: 20,
+                  prompt_tokens: 10,
+                  model: 'gpt-3.5-turbo',
+                })
 
-              return HttpResponse.json(mockResponse)
+                return HttpResponse.json(mockResponse)
+              } catch (error) {
+                console.error('Error in trackConversationUsage handler:', error)
+                throw error
+              }
             },
           ),
         )
@@ -420,9 +523,14 @@ describe('MindlyticsClient', () => {
         http.post(
           'http://localhost:3000/v1/events/event/track',
           ({ request }) => {
-            expect(request.headers.get('Authorization')).toBe('test-api-key')
-            expect(request.headers.get('x-app-id')).toBe('test-project-id')
-            return HttpResponse.json({ success: true })
+            try {
+              expect(request.headers.get('Authorization')).toBe('test-api-key')
+              expect(request.headers.get('x-app-id')).toBe('test-project-id')
+              return HttpResponse.json({ success: true })
+            } catch (error) {
+              console.error('Error in trackEvent handler:', error)
+              throw error
+            }
           },
         ),
       )

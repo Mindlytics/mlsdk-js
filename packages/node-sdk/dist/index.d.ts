@@ -1,5 +1,5 @@
 import { MindlyticsClient } from '@mindlytics/core';
-import type { EndConversationParams, EndSessionParams, MindlyticsOptions, StartConversationParams, StartSessionParams as StartSessionParamsCore, TrackConversationTurnParams, TrackEventParams, UserAliasParams, UserIdentifyParams } from '@mindlytics/core';
+import type { EndConversationParams, EndSessionParams, MindlyticsOptions, StartConversationParams, StartSessionParams as StartSessionParamsCore, TrackConversationTurnParams, TrackEventParams, SessionUserAliasParams, SessionUserIdentifyParams } from '@mindlytics/core';
 export interface SessionOptions extends MindlyticsOptions {
     sessionId?: string;
 }
@@ -92,10 +92,10 @@ export declare class Session {
     end(params?: Omit<EndSessionParams, 'session_id'>): Promise<void>;
     flush(): Promise<void>;
     track(params: Omit<TrackEventParams, 'session_id' | 'type'>): Promise<void>;
-    identify(params: Omit<UserIdentifyParams, 'session_id' | 'type'>): Promise<void>;
-    alias(params: Omit<UserAliasParams, 'session_id' | 'type'>): Promise<void>;
+    identify(params: Omit<SessionUserIdentifyParams, 'session_id' | 'type'>): Promise<void>;
+    alias(params: Omit<SessionUserAliasParams, 'session_id' | 'type'>): Promise<void>;
     startConversation(params?: Omit<StartConversationParams, 'session_id' | 'conversation_id'> & {
-        conversationId?: string;
+        conversation_id?: string;
     }): Promise<void>;
     endConversation(params: Omit<EndConversationParams, 'session_id' | 'type' | 'conversation_id'>): Promise<void>;
     trackConversationTurn(params: Omit<TrackConversationTurnParams, 'session_id' | 'type' | 'conversation_id'>): Promise<void>;

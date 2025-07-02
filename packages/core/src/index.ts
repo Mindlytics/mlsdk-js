@@ -148,14 +148,14 @@ export class MindlyticsClient<
     })
   }
 
-  async identify(params: UserIdentifyParams) {
+  async sessionUserIdentify(params: SessionUserIdentifyParams) {
     return this.makeRequest('/events/event/identify', {
       type: 'identify',
       ...params,
     })
   }
 
-  async alias(params: UserAliasParams) {
+  async sessionUserAlias(params: SessionUserAliasParams) {
     return this.makeRequest('/events/event/alias', {
       type: 'alias',
       ...params,
@@ -193,6 +193,18 @@ export class MindlyticsClient<
       ...params,
     })
   }
+
+  async identify(params: UserIdentifyParams) {
+    return this.client.POST('/user/identify', {
+      body: params,
+    })
+  }
+
+  async alias(params: UserAliasParams) {
+    return this.client.POST('/user/alias', {
+      body: params,
+    })
+  }
 }
 
 export type StartSessionParams = Omit<
@@ -207,11 +219,11 @@ export type TrackEventParams = Omit<
   paths['/events/event/track']['post']['requestBody']['content']['application/json'],
   'type'
 >
-export type UserIdentifyParams = Omit<
+export type SessionUserIdentifyParams = Omit<
   paths['/events/event/identify']['post']['requestBody']['content']['application/json'],
   'type'
 >
-export type UserAliasParams = Omit<
+export type SessionUserAliasParams = Omit<
   paths['/events/event/alias']['post']['requestBody']['content']['application/json'],
   'type'
 >
@@ -231,3 +243,5 @@ export type TrackConversationUsageParams = Omit<
   paths['/events/event/conversation-usage']['post']['requestBody']['content']['application/json'],
   'type' | 'event'
 >
+export type UserIdentifyParams = paths['/user/identify']['post']['requestBody']['content']['application/json']
+export type UserAliasParams = paths['/user/alias']['post']['requestBody']['content']['application/json']
