@@ -189,7 +189,6 @@ describe('Session', () => {
 
     beforeEach(async () => {
       session = await Session.create(defaultOptions)
-      await session.start({ deviceId: 'device-321' })
       server.use(
         http.post(
           'http://localhost:3000/v1/events/event/start-session',
@@ -198,6 +197,7 @@ describe('Session', () => {
           },
         ),
       )
+      await session.start({ deviceId: 'device-321' })
     })
 
     describe('end', () => {
@@ -339,8 +339,6 @@ describe('Session', () => {
 
     beforeEach(async () => {
       session = await Session.create(defaultOptions)
-      await session.start({ deviceId: 'device-321' })
-
       server.use(
         http.post(
           'http://localhost:3000/v1/events/event/start-session',
@@ -370,6 +368,7 @@ describe('Session', () => {
           return HttpResponse.json({ success: true })
         }),
       )
+      await session.start({ deviceId: 'device-321' })
     })
 
     describe('startConversation', () => {
@@ -414,11 +413,6 @@ describe('Session', () => {
     let session: Session
     beforeEach(async () => {
       session = await Session.create(defaultOptions)
-      await session.start({ deviceId: 'device-321' })
-      await session.startConversation({
-        conversation_id: 'conv-123',
-      })
-
       server.use(
         http.post(
           'http://localhost:3000/v1/events/event/start-session',
@@ -448,7 +442,7 @@ describe('Session', () => {
           return HttpResponse.json({ success: true })
         }),
       )
-
+      await session.start({ deviceId: 'device-321' })
       await session.startConversation({
         conversation_id: 'conv-123',
       })
@@ -697,8 +691,6 @@ describe('Session', () => {
 
     beforeEach(async () => {
       session = await Session.create(defaultOptions)
-      await session.start({ deviceId: 'device-321' })
-
       server.use(
         http.post('http://localhost:3000/v1/events/event/start-session', () => {
           return HttpResponse.json({ success: true })
@@ -710,6 +702,7 @@ describe('Session', () => {
           return HttpResponse.json({ success: true })
         }),
       )
+      await session.start({ deviceId: 'device-321' })
     })
 
     it('should track events using session context', async () => {

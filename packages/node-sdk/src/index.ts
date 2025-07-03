@@ -213,7 +213,7 @@ export class Session {
   }
 
   public async flush() {
-    await this.client.flush()
+    return this.client.flush()
   }
 
   public async track(params: Omit<TrackEventParams, 'session_id' | 'type'>) {

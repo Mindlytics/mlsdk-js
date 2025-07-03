@@ -67,13 +67,6 @@ describe('MindlyticsClient', () => {
       consoleSpy.mockRestore()
     })
 
-    it('should initialize queue when queue.enabled is not false', () => {
-      const client = new MindlyticsClient({
-        ...defaultOptions,
-        queue: { batchSize: 10 },
-      })
-      expect(client).toBeInstanceOf(MindlyticsClient)
-    })
   })
 
   describe('API methods', () => {
@@ -482,6 +475,7 @@ describe('MindlyticsClient', () => {
         session_id: 'session-123',
       })
 
+      await client.flush()
       expect(consoleSpy).toHaveBeenCalled()
 
       consoleSpy.mockRestore()
@@ -506,6 +500,7 @@ describe('MindlyticsClient', () => {
         session_id: 'session-123',
       })
 
+      await client.flush()
       expect(consoleSpy).not.toHaveBeenCalledWith(
         expect.stringContaining('[MLSDK:DEBUG:EventQueue]'),
         expect.anything(),
@@ -539,6 +534,7 @@ describe('MindlyticsClient', () => {
         event: 'Test Event',
         session_id: 'session-123',
       })
+      await client.flush()
     })
   })
 })

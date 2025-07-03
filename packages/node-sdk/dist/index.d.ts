@@ -90,7 +90,7 @@ export declare class Session {
     get deviceId(): string | undefined;
     start(params?: StartSessionParams): Promise<string>;
     end(params?: Omit<EndSessionParams, 'session_id'>): Promise<void>;
-    flush(): Promise<void>;
+    flush(): Promise<import("@mindlytics/core").EventQueueError[]>;
     track(params: Omit<TrackEventParams, 'session_id' | 'type'>): Promise<void>;
     identify(params: Omit<SessionUserIdentifyParams, 'session_id' | 'type'>): Promise<void>;
     alias(params: Omit<SessionUserAliasParams, 'session_id' | 'type'>): Promise<void>;

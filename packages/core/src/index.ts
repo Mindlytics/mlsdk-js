@@ -1,12 +1,13 @@
 import { createClient, type Client } from './fetch.ts'
 import type { paths } from './schema.gen.ts'
-import { EventQueue, QueueOptions } from './queue.ts'
+import { EventQueue, QueueOptions, EventQueueError } from './queue.ts'
 import type { EventPaths } from './schema.ts'
 import { WebSocketClient, MLEventHandler, MLErrorHandler, MLEvent } from './ws.ts'
 
 export type { MLErrorHandler } from './ws.ts'
 export type { MLEventHandler } from './ws.ts'
 export type { MLEvent } from './ws.ts'
+export type { EventQueueError } from './queue.ts'
 
 export interface MindlyticsOptions {
   apiKey: string
@@ -81,8 +82,8 @@ export class MindlyticsClient<
    * Flush all queued events immediately
    * Useful before serverless function shutdown
    */
-  async flush(): Promise<void> {
-    await this.eventQueue.flush()
+  async flush(): Promise<EventQueueError[]> {
+    return this.eventQueue.flush()
   }
 
   /**

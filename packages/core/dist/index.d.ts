@@ -1,9 +1,10 @@
 import type { paths } from './schema.gen.ts';
-import { QueueOptions } from './queue.ts';
+import { QueueOptions, EventQueueError } from './queue.ts';
 import { MLEventHandler, MLErrorHandler } from './ws.ts';
 export type { MLErrorHandler } from './ws.ts';
 export type { MLEventHandler } from './ws.ts';
 export type { MLEvent } from './ws.ts';
+export type { EventQueueError } from './queue.ts';
 export interface MindlyticsOptions {
     apiKey: string;
     projectId: string;
@@ -24,7 +25,7 @@ export declare class MindlyticsClient<TOptions extends MindlyticsOptions = Mindl
      * Flush all queued events immediately
      * Useful before serverless function shutdown
      */
-    flush(): Promise<void>;
+    flush(): Promise<EventQueueError[]>;
     /**
      * Make a direct API call or queue it based on configuration
      */

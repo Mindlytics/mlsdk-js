@@ -120,7 +120,7 @@ export class Session {
         await this.client.flush();
     }
     async flush() {
-        await this.client.flush();
+        return this.client.flush();
     }
     async track(params) {
         if (!this.session_id) {
