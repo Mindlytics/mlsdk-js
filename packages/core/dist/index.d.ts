@@ -4,6 +4,7 @@ import { MLEventHandler, MLErrorHandler } from './ws.ts';
 export type { MLErrorHandler } from './ws.ts';
 export type { MLEventHandler } from './ws.ts';
 export type { MLEvent } from './ws.ts';
+export type { EventQueueError } from './queue.ts';
 export interface MindlyticsOptions {
     apiKey: string;
     projectId: string;

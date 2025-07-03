@@ -1,5 +1,5 @@
 import { MindlyticsClient } from '@mindlytics/core';
-import type { EndConversationParams, EndSessionParams, MindlyticsOptions, StartConversationParams, StartSessionParams as StartSessionParamsCore, TrackConversationTurnParams, TrackEventParams, UserAliasParams, UserIdentifyParams } from '@mindlytics/core';
+import type { EndConversationParams, EndSessionParams, MindlyticsOptions, StartConversationParams, StartSessionParams as StartSessionParamsCore, TrackConversationTurnParams, TrackEventParams, UserAliasParams, UserIdentifyParams, EventQueueError } from '@mindlytics/core';
 export interface SessionOptions extends MindlyticsOptions {
     sessionId?: string;
 }
@@ -90,7 +90,7 @@ export declare class Session {
     get deviceId(): string | undefined;
     start(params?: StartSessionParams): Promise<string>;
     end(params?: Omit<EndSessionParams, 'session_id'>): Promise<void>;
-    flush(): Promise<void>;
+    flush(): Promise<EventQueueError[]>;
     track(params: Omit<TrackEventParams, 'session_id' | 'type'>): Promise<void>;
     identify(params: Omit<UserIdentifyParams, 'session_id' | 'type'>): Promise<void>;
     alias(params: Omit<UserAliasParams, 'session_id' | 'type'>): Promise<void>;

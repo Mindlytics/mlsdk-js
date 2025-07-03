@@ -65,7 +65,10 @@ async function toolCall() {
 
   await session.end()
 
-  await session.flush()
+  const errors = await session.flush()
+  if (errors.length > 0) {
+    console.error('Errors occurred during flush:', errors)
+  }
 }
 
 await main()

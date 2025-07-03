@@ -4,7 +4,8 @@ async function main() {
   const session = await Session.create({
     projectId: process.env.PROJECT_ID!,
     apiKey: process.env.API_KEY!,
-    debug: true,
+    ...(process.env.BASE_URL && { baseUrl: process.env.BASE_URL }),
+    debug: false,
   })
 
   const sessionId = await session.start({
@@ -36,7 +37,10 @@ async function toolCall() {
 
   await session.end()
 
-  await session.flush()
+  const errors = await session.flush()
+  if (errors.length > 0) {
+    console.error('Errors occurred during flush:', errors)
+  }
 }
 
 main().then(() => {
