@@ -2,15 +2,10 @@ import { Client } from './fetch.ts';
 import type { EventPaths } from './schema.ts';
 export interface QueueOptions {
     /**
-     * Maximum number of events to send in a single batch
-     * @default 10
-     */
-    batchSize?: number;
-    /**
      * Interval in milliseconds between sending batches
      * @default 1000
      */
-    flushInterval?: number;
+    baseDelayMS?: number;
     /**
      * Maximum number of retries for failed requests
      * @default 3
@@ -49,33 +44,29 @@ export interface QueueItem {
      */
     retries?: number;
 }
+export type EventQueueError = {
+    item: QueueItem;
+    error: Error;
+    code: number;
+};
 export declare class EventQueue {
     private client;
     private queue;
-    private timer;
-    private isFlushing;
     private options;
+    private errors;
     constructor(client: Client, options?: QueueOptions);
     /**
      * Add an item to the queue
      */
-    enqueue(item: QueueItem): void;
-    /**
-     * Start the timer to periodically flush the queue
-     */
-    private startTimer;
+    enqueue(item: QueueItem): Promise<void>;
     /**
      * Process and send all items in the queue
      */
-    flush(): Promise<void>;
+    flush(): Promise<EventQueueError[]>;
     /**
-     * Process a single queue item
+     * Process a single item in the queue
      */
     private processItem;
-    /**
-     * Stop the queue timer
-     */
-    stop(): void;
     /**
      * Debug logging
      */

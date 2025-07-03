@@ -50,7 +50,7 @@ export class MindlyticsClient {
      * Useful before serverless function shutdown
      */
     async flush() {
-        await this.eventQueue.flush();
+        return this.eventQueue.flush();
     }
     /**
      * Make a direct API call or queue it based on configuration

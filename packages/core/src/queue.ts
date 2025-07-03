@@ -1,19 +1,13 @@
 import { Client } from './fetch.ts'
-import type { paths } from './schema.gen.ts'
 import type { EventPaths } from './schema.ts'
+import { Queue } from 'async-await-queue'
 
 export interface QueueOptions {
-  /**
-   * Maximum number of events to send in a single batch
-   * @default 10
-   */
-  batchSize?: number
-
   /**
    * Interval in milliseconds between sending batches
    * @default 1000
    */
-  flushInterval?: number
+  baseDelayMS?: number
 
   /**
    * Maximum number of retries for failed requests
@@ -61,164 +55,118 @@ export interface QueueItem {
   retries?: number
 }
 
+export type EventQueueError = {
+  item: QueueItem
+  error: Error
+  code: number
+}
+
 export class EventQueue {
-  private queue: QueueItem[] = []
-  private timer: NodeJS.Timeout | null = null
-  private isFlushing = false
+  private queue = new Queue(1, 100) // Limit concurrency to 1 to ensure sequential processing
   private options: Required<QueueOptions>
+  private errors: EventQueueError[] = []
 
   constructor(private client: Client, options: QueueOptions = {}) {
     this.options = {
-      batchSize: options.batchSize ?? 10,
-      flushInterval: options.flushInterval ?? 1000,
+      baseDelayMS: options.baseDelayMS ?? 1000,
       maxRetries: options.maxRetries ?? 3,
       debug: options.debug ?? false,
     }
-
-    this.startTimer()
   }
 
   /**
    * Add an item to the queue
    */
-  public enqueue(item: QueueItem): void {
-    this.queue.push({
-      ...item,
-      retries: 0,
-      timestamp: item.timestamp ?? Date.now(),
-    })
-
-    this.debug(`Item added to queue. Queue size: ${this.queue.length}`, item)
-
-    // If we've reached the batch size, flush immediately
-    if (this.queue.length >= this.options.batchSize) {
-      this.debug(
-        `Queue reached batch size (${this.options.batchSize}). Flushing...`,
-      )
-      this.flush()
-    }
-  }
-
-  /**
-   * Start the timer to periodically flush the queue
-   */
-  private startTimer(): void {
-    if (this.timer) {
-      clearInterval(this.timer)
-    }
-
-    this.timer = setInterval(() => {
-      if (this.queue.length > 0) {
-        this.debug(`Timer triggered. Flushing queue...`)
-        this.flush()
-      }
-    }, this.options.flushInterval)
-
-    // Ensure the timer doesn't prevent the process from exiting
-    if (this.timer.unref) {
-      this.timer.unref()
+  public async enqueue(item: QueueItem): Promise<void> {
+    const me = Symbol()
+    await this.queue.wait(me, -1)
+    try {
+      await this.processItem(item)
+    } finally {
+      this.queue.end(me)
     }
   }
 
   /**
    * Process and send all items in the queue
    */
-  public async flush(): Promise<void> {
-    if (this.isFlushing || this.queue.length === 0) {
-      return
-    }
-
-    this.isFlushing = true
-
-    try {
-      // Take items up to the batch size
-      const batch = this.queue.splice(0, this.options.batchSize)
-      this.debug(`Processing batch of ${batch.length} items`)
-
-      for (const item of batch) {
-        await this.processItem(item)
-      }
-
-      // TODO: ideally we call everything in parallel
-      // but it's not really possible, since session start needs to happen before any other events and end session needs to be last.
-
-      // Process each item in the batch
-      // const promises = batch.map((item) => this.processItem(item))
-
-      // // Wait for all requests to complete
-      // await Promise.all(promises)
-    } catch (error) {
-      this.debug(`Error during flush: ${error}`)
-    } finally {
-      this.isFlushing = false
-
-      // If there are still items in the queue, flush again
-      if (this.queue.length > 0) {
-        this.debug(
-          `Queue still has ${this.queue.length} items. Continuing flush...`,
-        )
-        this.flush()
-      }
-    }
+  public async flush(): Promise<EventQueueError[]> {
+    await this.queue.flush()
+    return this.errors
   }
 
   /**
-   * Process a single queue item
+   * Process a single item in the queue
    */
   private async processItem(item: QueueItem): Promise<void> {
-    try {
-      this.debug(`Processing request to ${item.path}`, item.body, item.params)
-
-      // Make the API request
-      const { data, error } = await this.client.POST(item.path, {
-        body: item.body,
-        params: item.params,
-      })
-
-      if (error) {
-        this.debug(`Error processing request to ${item.path}: ${error}`)
-
-        throw new Error((error as any).message ?? 'Unknown error', {
-          cause: {
-            data,
-          },
+    this.debug(`Processing request to ${item.path}`, item.body, item.params)
+    let attempt = 1
+    const baseDelayMs = this.options.baseDelayMS
+    const retryableCodes = [408, 429, 502, 503, 504] // Common retryable HTTP status codes
+    const execute = async (): Promise<void> => {
+      try {
+        const { data, error, response } = await this.client.POST(item.path, {
+          body: item.body,
+          params: item.params,
+        })
+        if (!error) {
+          return
+        }
+        const res = response as Response
+        const code = res.status
+        if (attempt >= this.options.maxRetries) {
+          this.debug(
+            `Max retries reached for request to ${item.path}. Dropping request.`,
+          )
+          this.errors.push({
+            item,
+            error: new Error(
+              `Max retries reached for request to ${item.path}: ${code} ${res.statusText}`,
+            ),
+            code,
+          })
+          return
+        }
+        if (!retryableCodes.includes(code)) {
+          this.debug(
+            `Non-retryable error processing request to ${item.path}: ${code} ${res.statusText}`,
+          )
+          this.errors.push({
+            item,
+            error: new Error(
+              `Non-retryable error processing request to ${item.path}: ${code} ${res.statusText}`,
+            ),
+            code,
+          })
+          return
+        }
+        const message = res.statusText || 'Unknown error'
+        const retryAfter =
+          res.headers.get('Retry-After') ||
+          res.headers.get('retry-after') ||
+          null
+        const delayMS =
+          retryAfter !== null
+            ? parseInt(retryAfter, 10) * 1000
+            : baseDelayMs * 2 ** attempt
+        this.debug(
+          `Retryprocessing request to ${item.path}: ${code} ${message}. Retrying in ${delayMS}ms (attempt ${attempt}/${this.options.maxRetries})`,
+        )
+        await new Promise((resolve) => setTimeout(resolve, delayMS))
+        attempt++
+        return execute()
+      } catch (err) {
+        this.debug(`Error thrown processing request to ${item.path}: ${err}`)
+        this.errors.push({
+          item,
+          error: new Error(
+            `Error thrown processing request to ${item.path}: ${err}`,
+          ),
+          code: 500, // Generic error code
         })
       }
-
-      this.debug(`Successfully processed request to ${item.path}`)
-    } catch (error) {
-      this.debug(`Error processing request to ${item.path}: ${error}`)
-
-      // Retry logic
-      const retries = item.retries || 0
-      if (retries < this.options.maxRetries) {
-        this.debug(
-          `Retrying request to ${item.path} (attempt ${retries + 1}/${
-            this.options.maxRetries
-          })`,
-        )
-
-        // Add back to the queue with incremented retry count
-        this.queue.push({
-          ...item,
-          retries: retries + 1,
-        })
-      } else {
-        this.debug(
-          `Max retries reached for request to ${item.path}. Dropping request.`,
-        )
-      }
     }
-  }
-
-  /**
-   * Stop the queue timer
-   */
-  public stop(): void {
-    if (this.timer) {
-      clearInterval(this.timer)
-      this.timer = null
-    }
+    return execute()
   }
 
   /**
