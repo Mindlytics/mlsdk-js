@@ -15,5 +15,7 @@
 node_modules
 .ipynb_checkpoints/
 
+dist
+
 .env
 .env.*
