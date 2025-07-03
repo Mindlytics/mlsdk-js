@@ -37,7 +37,7 @@ export class WebSocketClient {
 
   public startListening(): Promise<void> {
     return new Promise(async (resolve, reject) => {
-      const { data, error } = await this.httpClient.GET('/live-events/realtime')
+      const { data, error } = await this.httpClient.GET('/bc/v1/live-events/realtime')
       if (error) {
         return reject(
           new Error(`Failed to obtain websocket authorization key: ${error}`),

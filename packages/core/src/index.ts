@@ -20,7 +20,7 @@ export interface MindlyticsOptions {
 export class MindlyticsClient<
   TOptions extends MindlyticsOptions = MindlyticsOptions,
 > {
-  private baseUrl: string = 'https://app-staging.mindlytics.ai/bc/v1'
+  private baseUrl: string = 'https://app-staging.mindlytics.ai'
   private client: Client
   private eventQueue: EventQueue
   private wsClient: WebSocketClient | null = null
@@ -115,9 +115,8 @@ export class MindlyticsClient<
     // derive the ws endpoint from the base URL
     let wsEndpoint = this.baseUrl.replace(/^http/, 'ws')
     wsEndpoint = wsEndpoint.replace('//app/', '//wss/')
-    // To handle localhost
+    // To handle localhost, matching ws servers are on 400x
     wsEndpoint = wsEndpoint.replace(':300', ':400')
-    wsEndpoint = wsEndpoint.replace('/bc/v1', '')
 
     this.wsClient = new WebSocketClient(
       this.client,
@@ -129,42 +128,42 @@ export class MindlyticsClient<
   }
 
   async startSession(params: StartSessionParams) {
-    return this.makeRequest('/events/event/start-session', {
+    return this.makeRequest('/bc/v1/events/event/start-session', {
       type: 'start_session',
       ...params,
     })
   }
 
   async endSession(params: EndSessionParams) {
-    return this.makeRequest('/events/event/end-session', {
+    return this.makeRequest('/bc/v1/events/event/end-session', {
       type: 'end_session',
       ...params,
     })
   }
 
   async trackEvent(params: TrackEventParams) {
-    return this.makeRequest('/events/event/track', {
+    return this.makeRequest('/bc/v1/events/event/track', {
       type: 'track',
       ...params,
     })
   }
 
   async sessionUserIdentify(params: SessionUserIdentifyParams) {
-    return this.makeRequest('/events/event/identify', {
+    return this.makeRequest('/bc/v1/events/event/identify', {
       type: 'identify',
       ...params,
     })
   }
 
   async sessionUserAlias(params: SessionUserAliasParams) {
-    return this.makeRequest('/events/event/alias', {
+    return this.makeRequest('/bc/v1/events/event/alias', {
       type: 'alias',
       ...params,
     })
   }
 
   async startConversation(params: StartConversationParams) {
-    return this.makeRequest('/events/event/start-conversation', {
+    return this.makeRequest('/bc/v1/events/event/start-conversation', {
       type: 'track',
       event: 'Conversation Started',
       ...params,
@@ -172,7 +171,7 @@ export class MindlyticsClient<
   }
 
   async endConversation(params: EndConversationParams) {
-    return this.makeRequest('/events/event/end-conversation', {
+    return this.makeRequest('/bc/v1/events/event/end-conversation', {
       type: 'track',
       event: 'Conversation Ended',
       ...params,
@@ -180,7 +179,7 @@ export class MindlyticsClient<
   }
 
   async trackConversationTurn(params: TrackConversationTurnParams) {
-    return this.makeRequest('/events/event/conversation-turn', {
+    return this.makeRequest('/bc/v1/events/event/conversation-turn', {
       type: 'track',
       event: 'Conversation Turn',
       ...params,
@@ -188,7 +187,7 @@ export class MindlyticsClient<
   }
 
   async trackConversationUsage(params: TrackConversationUsageParams) {
-    return this.makeRequest('/events/event/conversation-usage', {
+    return this.makeRequest('/bc/v1/events/event/conversation-usage', {
       type: 'track',
       event: 'Conversation Usage',
       ...params,
@@ -196,53 +195,53 @@ export class MindlyticsClient<
   }
 
   async identify(params: UserIdentifyParams) {
-    return this.client.POST('/user/identify', {
+    return this.client.POST('/bc/v1/user/identify', {
       body: params,
     })
   }
 
   async alias(params: UserAliasParams) {
-    return this.client.POST('/user/alias', {
+    return this.client.POST('/bc/v1/user/alias', {
       body: params,
     })
   }
 }
 
 export type StartSessionParams = Omit<
-  paths['/events/event/start-session']['post']['requestBody']['content']['application/json'],
+  paths['/bc/v1/events/event/start-session']['post']['requestBody']['content']['application/json'],
   'type'
 >
 export type EndSessionParams = Omit<
-  paths['/events/event/end-session']['post']['requestBody']['content']['application/json'],
+  paths['/bc/v1/events/event/end-session']['post']['requestBody']['content']['application/json'],
   'type'
 >
 export type TrackEventParams = Omit<
-  paths['/events/event/track']['post']['requestBody']['content']['application/json'],
+  paths['/bc/v1/events/event/track']['post']['requestBody']['content']['application/json'],
   'type'
 >
 export type SessionUserIdentifyParams = Omit<
-  paths['/events/event/identify']['post']['requestBody']['content']['application/json'],
+  paths['/bc/v1/events/event/identify']['post']['requestBody']['content']['application/json'],
   'type'
 >
 export type SessionUserAliasParams = Omit<
-  paths['/events/event/alias']['post']['requestBody']['content']['application/json'],
+  paths['/bc/v1/events/event/alias']['post']['requestBody']['content']['application/json'],
   'type'
 >
 export type StartConversationParams = Omit<
-  paths['/events/event/start-conversation']['post']['requestBody']['content']['application/json'],
+  paths['/bc/v1/events/event/start-conversation']['post']['requestBody']['content']['application/json'],
   'type' | 'event'
 >
 export type EndConversationParams = Omit<
-  paths['/events/event/end-conversation']['post']['requestBody']['content']['application/json'],
+  paths['/bc/v1/events/event/end-conversation']['post']['requestBody']['content']['application/json'],
   'type' | 'event'
 >
 export type TrackConversationTurnParams = Omit<
-  paths['/events/event/conversation-turn']['post']['requestBody']['content']['application/json'],
+  paths['/bc/v1/events/event/conversation-turn']['post']['requestBody']['content']['application/json'],
   'type' | 'event'
 >
 export type TrackConversationUsageParams = Omit<
-  paths['/events/event/conversation-usage']['post']['requestBody']['content']['application/json'],
+  paths['/bc/v1/events/event/conversation-usage']['post']['requestBody']['content']['application/json'],
   'type' | 'event'
 >
-export type UserIdentifyParams = paths['/user/identify']['post']['requestBody']['content']['application/json']
-export type UserAliasParams = paths['/user/alias']['post']['requestBody']['content']['application/json']
+export type UserIdentifyParams = paths['/bc/v1/user/identify']['post']['requestBody']['content']['application/json']
+export type UserAliasParams = paths['/bc/v1/user/alias']['post']['requestBody']['content']['application/json']

@@ -28,16 +28,16 @@ Create a ".env" file at the top of the repository that looks something like:
 ```sh
 API_KEY=xxxx
 PROJECT_ID=yyyy
-BASE_URL=http://localhost:3000/bc/v1
+BASE_URL=http://localhost:3000
 ```
 
 Leave out `BASE_URL` if you are testing against the production Mindlytics backend service.  Otherwise use
 
 | Environment | BASE_URL |
 | ----------- | -------- |
-| local       | http://localhost:3000/bc/v1 |
-| staging     | https://app-staging.mindlytics.ai/bc/v1 |
-| production  | https://app.mindlytics.ai/bc/v1 |
+| local       | http://localhost:3000 |
+| staging     | https://app-staging.mindlytics.ai |
+| production  | https://app.mindlytics.ai |
 
 Then you can run
 

@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "generate": "openapi-typescript https://app.mindlytics.ai/bc/v1/openapi.json -o src/schema.gen.ts",
+    "generate": "openapi-typescript https://app.mindlytics.ai/openapi.json -o src/schema.gen.ts",
     "build": "tsc"
   },
   "exports": {

@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/charts/segmentation-chart": {
+    "/bc/v1/charts/segmentation-chart": {
         parameters: {
             query?: never;
             header?: never;
@@ -465,7 +465,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/charts/retention-chart": {
+    "/bc/v1/charts/retention-chart": {
         parameters: {
             query?: never;
             header?: never;
@@ -1002,7 +1002,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/charts/session-chart": {
+    "/bc/v1/charts/session-chart": {
         parameters: {
             query?: never;
             header?: never;
@@ -1474,7 +1474,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/charts/user-composition-chart": {
+    "/bc/v1/charts/user-composition-chart": {
         parameters: {
             query?: never;
             header?: never;
@@ -1879,7 +1879,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/charts/intent-distribution-chart": {
+    "/bc/v1/charts/intent-distribution-chart": {
         parameters: {
             query?: never;
             header?: never;
@@ -2195,7 +2195,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/charts/funnel-chart": {
+    "/bc/v1/charts/funnel-chart": {
         parameters: {
             query?: never;
             header?: never;
@@ -2662,7 +2662,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/charts/conversation-analysis": {
+    "/bc/v1/charts/conversation-analysis": {
         parameters: {
             query?: never;
             header?: never;
@@ -3197,7 +3197,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/charts/intent-analysis": {
+    "/bc/v1/charts/intent-analysis": {
         parameters: {
             query?: never;
             header?: never;
@@ -3736,7 +3736,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/charts/sentiment-analysis": {
+    "/bc/v1/charts/sentiment-analysis": {
         parameters: {
             query?: never;
             header?: never;
@@ -4149,7 +4149,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/agg/event-names": {
+    "/bc/v1/agg/event-names": {
         parameters: {
             query?: never;
             header?: never;
@@ -4199,7 +4199,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/agg/property-names": {
+    "/bc/v1/agg/property-names": {
         parameters: {
             query?: never;
             header?: never;
@@ -4220,7 +4220,13 @@ export interface paths {
                         /** @description Previously picked proerty, trait or attribute name. */
                         name: string;
                         /** @description Previously picked property, trait or attribute value. */
-                        value: string;
+                        value: string | number | boolean | string[] | number[];
+                        /**
+                         * @description Previous operator for the pick.  Defaults to "eq".
+                         * @example eq
+                         * @enum {string}
+                         */
+                        operator?: "eq" | "neq" | "in" | "nin" | "case_insensitive_eq" | "case_insensitive_neq" | "regex" | "not_regex" | "between" | "gt" | "gte" | "lt" | "lte";
                     }[];
                     /** @description Property Regex */
                     property_regex?: string;
@@ -4258,7 +4264,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/agg/property-values": {
+    "/bc/v1/agg/property-values": {
         parameters: {
             query?: never;
             header?: never;
@@ -4312,7 +4318,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/agg/trait-names": {
+    "/bc/v1/agg/trait-names": {
         parameters: {
             query?: never;
             header?: never;
@@ -4333,7 +4339,13 @@ export interface paths {
                         /** @description Previously picked proerty, trait or attribute name. */
                         name: string;
                         /** @description Previously picked property, trait or attribute value. */
-                        value: string;
+                        value: string | number | boolean | string[] | number[];
+                        /**
+                         * @description Previous operator for the pick.  Defaults to "eq".
+                         * @example eq
+                         * @enum {string}
+                         */
+                        operator?: "eq" | "neq" | "in" | "nin" | "case_insensitive_eq" | "case_insensitive_neq" | "regex" | "not_regex" | "between" | "gt" | "gte" | "lt" | "lte";
                     }[];
                     /** @description Trait Regex */
                     trait_regex?: string;
@@ -4371,7 +4383,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/agg/trait-values": {
+    "/bc/v1/agg/trait-values": {
         parameters: {
             query?: never;
             header?: never;
@@ -4425,7 +4437,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/agg/intent-names": {
+    "/bc/v1/agg/intent-names": {
         parameters: {
             query?: never;
             header?: never;
@@ -4475,7 +4487,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/agg/intent-attribute-names": {
+    "/bc/v1/agg/intent-attribute-names": {
         parameters: {
             query?: never;
             header?: never;
@@ -4496,7 +4508,13 @@ export interface paths {
                         /** @description Previously picked proerty, trait or attribute name. */
                         name: string;
                         /** @description Previously picked property, trait or attribute value. */
-                        value: string;
+                        value: string | number | boolean | string[] | number[];
+                        /**
+                         * @description Previous operator for the pick.  Defaults to "eq".
+                         * @example eq
+                         * @enum {string}
+                         */
+                        operator?: "eq" | "neq" | "in" | "nin" | "case_insensitive_eq" | "case_insensitive_neq" | "regex" | "not_regex" | "between" | "gt" | "gte" | "lt" | "lte";
                     }[];
                     /** @description Attribute Regex */
                     attribute_regex?: string;
@@ -4534,7 +4552,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/agg/intent-attribute-values": {
+    "/bc/v1/agg/intent-attribute-values": {
         parameters: {
             query?: never;
             header?: never;
@@ -4588,7 +4606,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/agg/user-trait-names": {
+    "/bc/v1/agg/user-trait-names": {
         parameters: {
             query?: never;
             header?: never;
@@ -4609,7 +4627,13 @@ export interface paths {
                         /** @description Previously picked proerty, trait or attribute name. */
                         name: string;
                         /** @description Previously picked property, trait or attribute value. */
-                        value: string;
+                        value: string | number | boolean | string[] | number[];
+                        /**
+                         * @description Previous operator for the pick.  Defaults to "eq".
+                         * @example eq
+                         * @enum {string}
+                         */
+                        operator?: "eq" | "neq" | "in" | "nin" | "case_insensitive_eq" | "case_insensitive_neq" | "regex" | "not_regex" | "between" | "gt" | "gte" | "lt" | "lte";
                     }[];
                     /** @description Trait Regex */
                     trait_regex?: string;
@@ -4647,7 +4671,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/agg/user-trait-values": {
+    "/bc/v1/agg/user-trait-values": {
         parameters: {
             query?: never;
             header?: never;
@@ -4701,7 +4725,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/db/retrieve_data": {
+    "/bc/v1/db/retrieve_data": {
         parameters: {
             query?: never;
             header?: never;
@@ -4740,7 +4764,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/db/import_demo_data": {
+    "/bc/v1/db/import_demo_data": {
         parameters: {
             query?: never;
             header?: never;
@@ -4785,7 +4809,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/db/{collection}/{op}": {
+    "/bc/v1/db/{collection}/{op}": {
         parameters: {
             query?: never;
             header?: never;
@@ -4832,7 +4856,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/orgkeys": {
+    "/bc/v1/orgkeys": {
         parameters: {
             query?: never;
             header?: never;
@@ -4971,7 +4995,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/udi": {
+    "/bc/v1/udi": {
         parameters: {
             query?: never;
             header?: never;
@@ -5080,7 +5104,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/udi/{user_defined_intent_id}": {
+    "/bc/v1/udi/{user_defined_intent_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -5220,7 +5244,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/events/event": {
+    "/bc/v1/events/event": {
         parameters: {
             query?: never;
             header?: never;
@@ -5281,7 +5305,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/events/event/identify": {
+    "/bc/v1/events/event/identify": {
         parameters: {
             query?: never;
             header?: never;
@@ -5351,7 +5375,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/events/event/alias": {
+    "/bc/v1/events/event/alias": {
         parameters: {
             query?: never;
             header?: never;
@@ -5417,7 +5441,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/events/event/start-session": {
+    "/bc/v1/events/event/start-session": {
         parameters: {
             query?: never;
             header?: never;
@@ -5487,7 +5511,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/events/event/end-session": {
+    "/bc/v1/events/event/end-session": {
         parameters: {
             query?: never;
             header?: never;
@@ -5553,7 +5577,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/events/event/track": {
+    "/bc/v1/events/event/track": {
         parameters: {
             query?: never;
             header?: never;
@@ -5623,7 +5647,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/events/event/start-conversation": {
+    "/bc/v1/events/event/start-conversation": {
         parameters: {
             query?: never;
             header?: never;
@@ -5700,7 +5724,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/events/event/end-conversation": {
+    "/bc/v1/events/event/end-conversation": {
         parameters: {
             query?: never;
             header?: never;
@@ -5802,7 +5826,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/events/event/conversation-turn": {
+    "/bc/v1/events/event/conversation-turn": {
         parameters: {
             query?: never;
             header?: never;
@@ -5888,7 +5912,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/events/event/conversation-usage": {
+    "/bc/v1/events/event/conversation-usage": {
         parameters: {
             query?: never;
             header?: never;
@@ -5969,7 +5993,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/events/event/conversation-function": {
+    "/bc/v1/events/event/conversation-function": {
         parameters: {
             query?: never;
             header?: never;
@@ -6050,7 +6074,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/events/queue": {
+    "/bc/v1/events/queue": {
         parameters: {
             query?: never;
             header?: never;
@@ -6104,7 +6128,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/summary/top-intents": {
+    "/bc/v1/summary/top-intents": {
         parameters: {
             query?: never;
             header?: never;
@@ -6175,7 +6199,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/summary/user-sentiment": {
+    "/bc/v1/summary/user-sentiment": {
         parameters: {
             query?: never;
             header?: never;
@@ -6288,7 +6312,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/summary/user-conversations": {
+    "/bc/v1/summary/user-conversations": {
         parameters: {
             query?: never;
             header?: never;
@@ -6399,7 +6423,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/summary/engagement": {
+    "/bc/v1/summary/engagement": {
         parameters: {
             query?: never;
             header?: never;
@@ -6512,7 +6536,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/summary/event-counts": {
+    "/bc/v1/summary/event-counts": {
         parameters: {
             query?: never;
             header?: never;
@@ -6580,7 +6604,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/summary/new-intents": {
+    "/bc/v1/summary/new-intents": {
         parameters: {
             query?: never;
             header?: never;
@@ -6619,7 +6643,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user/list": {
+    "/bc/v1/user/list": {
         parameters: {
             query?: never;
             header?: never;
@@ -6693,7 +6717,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user/details": {
+    "/bc/v1/user/details": {
         parameters: {
             query?: never;
             header?: never;
@@ -6796,7 +6820,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user/insights": {
+    "/bc/v1/user/insights": {
         parameters: {
             query?: never;
             header?: never;
@@ -6876,7 +6900,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user/conversation": {
+    "/bc/v1/user/conversation": {
         parameters: {
             query?: never;
             header?: never;
@@ -6929,7 +6953,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user/event": {
+    "/bc/v1/user/event": {
         parameters: {
             query?: never;
             header?: never;
@@ -6987,7 +7011,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user/identify": {
+    "/bc/v1/user/identify": {
         parameters: {
             query?: never;
             header?: never;
@@ -7049,7 +7073,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/user/alias": {
+    "/bc/v1/user/alias": {
         parameters: {
             query?: never;
             header?: never;
@@ -7107,7 +7131,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/live-events/events": {
+    "/bc/v1/live-events/events": {
         parameters: {
             query?: never;
             header?: never;
@@ -7169,7 +7193,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/live-events/realtime": {
+    "/bc/v1/live-events/realtime": {
         parameters: {
             query?: never;
             header?: never;
@@ -7217,7 +7241,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/cohorts/byName": {
+    "/bc/v1/cohorts/byName": {
         parameters: {
             query?: never;
             header?: never;
@@ -7291,7 +7315,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/cohorts/byId": {
+    "/bc/v1/cohorts/byId": {
         parameters: {
             query?: never;
             header?: never;
@@ -7365,7 +7389,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/cohorts/evaluate": {
+    "/bc/v1/cohorts/evaluate": {
         parameters: {
             query?: never;
             header?: never;
@@ -7428,7 +7452,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/cohorts": {
+    "/bc/v1/cohorts": {
         parameters: {
             query?: never;
             header?: never;

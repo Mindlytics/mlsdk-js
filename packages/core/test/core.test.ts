@@ -23,7 +23,7 @@ describe('MindlyticsClient', () => {
   const defaultOptions = {
     apiKey: 'test-api-key',
     projectId: 'test-project-id',
-    baseUrl: 'http://localhost:3000/v1',
+    baseUrl: 'http://localhost:3000',
     debug: false,
   } satisfies MindlyticsOptions
 
@@ -53,7 +53,7 @@ describe('MindlyticsClient', () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
 
       server.use(
-        http.post('http://localhost:3000/v1/events/event/track', () => {
+        http.post('http://localhost:3000/bc/v1/events/event/track', () => {
           return HttpResponse.json({ success: true })
         }),
       )
@@ -81,7 +81,7 @@ describe('MindlyticsClient', () => {
         const mockResponse = { success: true }
         server.use(
           http.post(
-            'http://localhost:3000/v1/user/identify',
+            'http://localhost:3000/bc/v1/user/identify',
             async ({ request }) => {
               try {
                 const body = (await request.json()) as any
@@ -110,7 +110,7 @@ describe('MindlyticsClient', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/user/alias',
+            'http://localhost:3000/bc/v1/user/alias',
             async ({ request }) => {
               try {
                 const body = (await request.json()) as any
@@ -139,7 +139,7 @@ describe('MindlyticsClient', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/events/event/start-session',
+            'http://localhost:3000/bc/v1/events/event/start-session',
             async ({ request }) => {
               try {
                 const body = (await request.json()) as any
@@ -177,7 +177,7 @@ describe('MindlyticsClient', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/events/event/end-session',
+            'http://localhost:3000/bc/v1/events/event/end-session',
             async ({ request }) => {
               try {
                 const body = (await request.json()) as any
@@ -207,7 +207,7 @@ describe('MindlyticsClient', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/events/event/track',
+            'http://localhost:3000/bc/v1/events/event/track',
             async ({ request }) => {
               try {
                 const body = (await request.json()) as any
@@ -244,7 +244,7 @@ describe('MindlyticsClient', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/events/event/identify',
+            'http://localhost:3000/bc/v1/events/event/identify',
             async ({ request }) => {
               try {
                 const body = (await request.json()) as any
@@ -276,7 +276,7 @@ describe('MindlyticsClient', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/events/event/alias',
+            'http://localhost:3000/bc/v1/events/event/alias',
             async ({ request }) => {
               try {
                 const body = (await request.json()) as any
@@ -308,7 +308,7 @@ describe('MindlyticsClient', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/events/event/start-conversation',
+            'http://localhost:3000/bc/v1/events/event/start-conversation',
             async ({ request }) => {
               try {
                 const body = (await request.json()) as any
@@ -345,7 +345,7 @@ describe('MindlyticsClient', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/events/event/end-conversation',
+            'http://localhost:3000/bc/v1/events/event/end-conversation',
             async ({ request }) => {
               try {
                 const body = (await request.json()) as any
@@ -377,7 +377,7 @@ describe('MindlyticsClient', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/events/event/conversation-turn',
+            'http://localhost:3000/bc/v1/events/event/conversation-turn',
             async ({ request }) => {
               try {
                 const body = (await request.json()) as any
@@ -418,7 +418,7 @@ describe('MindlyticsClient', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/events/event/conversation-usage',
+            'http://localhost:3000/bc/v1/events/event/conversation-usage',
             async ({ request }) => {
               try {
                 const body = (await request.json()) as any
@@ -460,7 +460,7 @@ describe('MindlyticsClient', () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
 
       server.use(
-        http.post('http://localhost:3000/v1/events/event/track', () => {
+        http.post('http://localhost:3000/bc/v1/events/event/track', () => {
           return HttpResponse.json({ success: true })
         }),
       )
@@ -485,7 +485,7 @@ describe('MindlyticsClient', () => {
       const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
 
       server.use(
-        http.post('http://localhost:3000/v1/events/event/track', () => {
+        http.post('http://localhost:3000/bc/v1/events/event/track', () => {
           return HttpResponse.json({ success: true })
         }),
       )
@@ -516,7 +516,7 @@ describe('MindlyticsClient', () => {
 
       server.use(
         http.post(
-          'http://localhost:3000/v1/events/event/track',
+          'http://localhost:3000/bc/v1/events/event/track',
           ({ request }) => {
             try {
               expect(request.headers.get('Authorization')).toBe('test-api-key')

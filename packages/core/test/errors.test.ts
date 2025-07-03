@@ -23,7 +23,7 @@ describe('MindlyticsClient', () => {
   const defaultOptions = {
     apiKey: 'test-api-key',
     projectId: 'test-project-id',
-    baseUrl: 'http://localhost:3000/v1',
+    baseUrl: 'http://localhost:3000',
     debug: false,
   } satisfies MindlyticsOptions
 
@@ -43,7 +43,7 @@ describe('MindlyticsClient', () => {
       let tmr = null as NodeJS.Timeout | null
       server.use(
         http.post(
-          'http://localhost:3000/v1/events/event/start-session',
+          'http://localhost:3000/bc/v1/events/event/start-session',
           async () => {
             if (callCounter === 0) {
               tmr = setTimeout(() => {
@@ -83,7 +83,7 @@ describe('MindlyticsClient', () => {
         let callCounter = 0
         server.use(
             http.post(
-            'http://localhost:3000/v1/events/event/start-session',
+            'http://localhost:3000/bc/v1/events/event/start-session',
             async () => {
                 callCounter += 1
                 return new HttpResponse('Bad Gateway', { status: 502 })
@@ -112,7 +112,7 @@ describe('MindlyticsClient', () => {
         let callCounter = 0
         server.use(
             http.post(
-            'http://localhost:3000/v1/events/event/start-session',
+            'http://localhost:3000/bc/v1/events/event/start-session',
             async () => {
                 callCounter += 1
                 return new HttpResponse('Internal Server Error', { status: 500 })

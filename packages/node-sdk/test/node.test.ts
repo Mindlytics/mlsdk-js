@@ -23,7 +23,7 @@ describe('Session', () => {
   const defaultOptions = {
     apiKey: 'test-api-key',
     projectId: 'test-project-id',
-    baseUrl: 'http://localhost:3000/v1',
+    baseUrl: 'http://localhost:3000',
     debug: false,
   }
 
@@ -69,16 +69,16 @@ describe('Session', () => {
 
       // Mock the session endpoints
       server.use(
-        http.post('http://localhost:3000/v1/events/event/start-session', () => {
+        http.post('http://localhost:3000/bc/v1/events/event/start-session', () => {
           return HttpResponse.json({ success: true })
         }),
-        http.post('http://localhost:3000/v1/events/event/end-session', () => {
+        http.post('http://localhost:3000/bc/v1/events/event/end-session', () => {
           return HttpResponse.json({ success: true })
         }),
-        http.post('http://localhost:3000/v1/events/event/identify', () => {
+        http.post('http://localhost:3000/bc/v1/events/event/identify', () => {
           return HttpResponse.json({ success: true })
         }),
-        http.post('http://localhost:3000/v1/events/batch', () => {
+        http.post('http://localhost:3000/bc/v1/events/batch', () => {
           return HttpResponse.json({ success: true })
         }),
       )
@@ -90,7 +90,7 @@ describe('Session', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/events/event/start-session',
+            'http://localhost:3000/bc/v1/events/event/start-session',
             async ({ request }) => {
               requestBody = await request.json()
               return HttpResponse.json({ success: true })
@@ -125,14 +125,14 @@ describe('Session', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/events/event/start-session',
+            'http://localhost:3000/bc/v1/events/event/start-session',
             async ({ request }) => {
               startSessionBody = await request.json()
               return HttpResponse.json({ success: true })
             },
           ),
           http.post(
-            'http://localhost:3000/v1/events/event/identify',
+            'http://localhost:3000/bc/v1/events/event/identify',
             async ({ request }) => {
               identifyBody = await request.json()
               return HttpResponse.json({ success: true })
@@ -191,7 +191,7 @@ describe('Session', () => {
       session = await Session.create(defaultOptions)
       server.use(
         http.post(
-          'http://localhost:3000/v1/events/event/start-session',
+          'http://localhost:3000/bc/v1/events/event/start-session',
           async () => {
             return HttpResponse.json({ success: true })
           },
@@ -206,7 +206,7 @@ describe('Session', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/events/event/end-session',
+            'http://localhost:3000/bc/v1/events/event/end-session',
             async ({ request }) => {
               requestBody = await request.json()
               return HttpResponse.json({ success: true })
@@ -237,7 +237,7 @@ describe('Session', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/events/event/track',
+            'http://localhost:3000/bc/v1/events/event/track',
             async ({ request }) => {
               requestBody = await request.json()
               return HttpResponse.json({ success: true })
@@ -273,7 +273,7 @@ describe('Session', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/events/event/identify',
+            'http://localhost:3000/bc/v1/events/event/identify',
             async ({ request }) => {
               requestBody = await request.json()
               return HttpResponse.json({ success: true })
@@ -309,7 +309,7 @@ describe('Session', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/events/event/alias',
+            'http://localhost:3000/bc/v1/events/event/alias',
             async ({ request }) => {
               requestBody = await request.json()
               return HttpResponse.json({ success: true })
@@ -341,30 +341,30 @@ describe('Session', () => {
       session = await Session.create(defaultOptions)
       server.use(
         http.post(
-          'http://localhost:3000/v1/events/event/start-session',
+          'http://localhost:3000/bc/v1/events/event/start-session',
           () => {
             return HttpResponse.json({ success: true })
           },
         ),
         http.post(
-          'http://localhost:3000/v1/events/event/start-conversation',
+          'http://localhost:3000/bc/v1/events/event/start-conversation',
           () => {
             return HttpResponse.json({ success: true })
           },
         ),
         http.post(
-          'http://localhost:3000/v1/events/event/end-conversation',
+          'http://localhost:3000/bc/v1/events/event/end-conversation',
           () => {
             return HttpResponse.json({ success: true })
           },
         ),
         http.post(
-          'http://localhost:3000/v1/events/event/conversation-turn',
+          'http://localhost:3000/bc/v1/events/event/conversation-turn',
           () => {
             return HttpResponse.json({ success: true })
           },
         ),
-        http.post('http://localhost:3000/v1/events/batch', () => {
+        http.post('http://localhost:3000/bc/v1/events/batch', () => {
           return HttpResponse.json({ success: true })
         }),
       )
@@ -377,7 +377,7 @@ describe('Session', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/events/event/start-conversation',
+            'http://localhost:3000/bc/v1/events/event/start-conversation',
             async ({ request }) => {
               requestBody = await request.json()
               return HttpResponse.json({ success: true })
@@ -415,30 +415,30 @@ describe('Session', () => {
       session = await Session.create(defaultOptions)
       server.use(
         http.post(
-          'http://localhost:3000/v1/events/event/start-session',
+          'http://localhost:3000/bc/v1/events/event/start-session',
           () => {
             return HttpResponse.json({ success: true })
           },
         ),
         http.post(
-          'http://localhost:3000/v1/events/event/start-conversation',
+          'http://localhost:3000/bc/v1/events/event/start-conversation',
           () => {
             return HttpResponse.json({ success: true })
           },
         ),
         http.post(
-          'http://localhost:3000/v1/events/event/end-conversation',
+          'http://localhost:3000/bc/v1/events/event/end-conversation',
           () => {
             return HttpResponse.json({ success: true })
           },
         ),
         http.post(
-          'http://localhost:3000/v1/events/event/conversation-turn',
+          'http://localhost:3000/bc/v1/events/event/conversation-turn',
           () => {
             return HttpResponse.json({ success: true })
           },
         ),
-        http.post('http://localhost:3000/v1/events/batch', () => {
+        http.post('http://localhost:3000/bc/v1/events/batch', () => {
           return HttpResponse.json({ success: true })
         }),
       )
@@ -454,7 +454,7 @@ describe('Session', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/events/event/end-conversation',
+            'http://localhost:3000/bc/v1/events/event/end-conversation',
             async ({ request }) => {
               requestBody = await request.json()
               return HttpResponse.json({ success: true })
@@ -481,7 +481,7 @@ describe('Session', () => {
 
         server.use(
           http.post(
-            'http://localhost:3000/v1/events/event/conversation-turn',
+            'http://localhost:3000/bc/v1/events/event/conversation-turn',
             async ({ request }) => {
               requestBody = await request.json()
               return HttpResponse.json({ success: true })
@@ -515,10 +515,10 @@ describe('Session', () => {
       session = await Session.create(defaultOptions)
 
       server.use(
-        http.post('http://localhost:3000/v1/events/event/track', () => {
+        http.post('http://localhost:3000/bc/v1/events/event/track', () => {
           return HttpResponse.json({ success: true })
         }),
-        http.post('http://localhost:3000/v1/events/batch', () => {
+        http.post('http://localhost:3000/bc/v1/events/batch', () => {
           return HttpResponse.json({ success: true })
         }),
       )
@@ -692,13 +692,13 @@ describe('Session', () => {
     beforeEach(async () => {
       session = await Session.create(defaultOptions)
       server.use(
-        http.post('http://localhost:3000/v1/events/event/start-session', () => {
+        http.post('http://localhost:3000/bc/v1/events/event/start-session', () => {
           return HttpResponse.json({ success: true })
         }),
-        http.post('http://localhost:3000/v1/events/event/track', () => {
+        http.post('http://localhost:3000/bc/v1/events/event/track', () => {
           return HttpResponse.json({ success: true })
         }),
-        http.post('http://localhost:3000/v1/events/batch', () => {
+        http.post('http://localhost:3000/bc/v1/events/batch', () => {
           return HttpResponse.json({ success: true })
         }),
       )
@@ -710,7 +710,7 @@ describe('Session', () => {
 
       server.use(
         http.post(
-          'http://localhost:3000/v1/events/event/track',
+          'http://localhost:3000/bc/v1/events/event/track',
           async ({ request }) => {
             requestBody = await request.json()
             return HttpResponse.json({ success: true })
