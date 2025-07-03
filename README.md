@@ -119,3 +119,63 @@ waitUntil(session.end()) // End the entire session.
 
 waitUntil(session.flush()) // Only flush the pending events and continue the session in another request.
 ```
+
+## Receiving Events and Errors from Mindlytics
+
+```js
+import {MLEvent} from '@mindlytics/core'
+
+session.client.startListening(
+    onError: {
+        callback: (error: Error, data: any) => {...},
+        data: yourData
+    },
+    onEvent: {
+        callback: (event: MLEvent, data: any) => {...},
+        data: yourData
+    }
+)
+```
+
+Any `yourData` that you supply will be sent to your handlers as a second argument.  You can use this to gain access to contextual information if needed.  
+
+## Examples
+
+### Jupyter Notebook Examples
+
+If you haven't already, you must
+
+```sh
+yarn
+yarn build
+```
+
+To run the Jupyter notebook examples, you need to have Jupyter Labs installed natively on your computer.  One way of doing this is
+
+```sh
+pip install notebook
+```
+
+And you need to install the typescript kernel
+
+```sh
+npx tslab install
+```
+
+Most of the Jupyter notebook examples expect to find your Mindlytics apikey and project id in environment variables.  You can create a `.env` file at the top of the repo here that looks like
+
+```sh
+API_KEY=xxxxx
+PROJECT_ID=yyyy
+```
+
+with the values from your account of course!
+
+Then you can:
+
+```sh
+cd examples/jupyter
+eval `cat ../../.env` jupyter lab
+```
+
+That should open a new tab in your browser and take you to the lab console.  In the left panel, double click on "notebooks" and then open one of the examples.

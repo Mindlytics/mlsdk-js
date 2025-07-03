@@ -2,6 +2,11 @@ import { createClient, type Client } from './fetch.ts'
 import type { paths } from './schema.gen.ts'
 import { EventQueue, QueueOptions } from './queue.ts'
 import type { EventPaths } from './schema.ts'
+import { WebSocketClient, MLEventHandler, MLErrorHandler, MLEvent } from './ws.ts'
+
+export type { MLErrorHandler } from './ws.ts'
+export type { MLEventHandler } from './ws.ts'
+export type { MLEvent } from './ws.ts'
 
 export interface MindlyticsOptions {
   apiKey: string
@@ -17,6 +22,7 @@ export class MindlyticsClient<
   private baseUrl: string = 'https://app-staging.mindlytics.ai/bc/v1'
   private client: Client
   private eventQueue: EventQueue
+  private wsClient: WebSocketClient | null = null
 
   constructor(private options: TOptions) {
     if (options.baseUrl) {
@@ -93,6 +99,32 @@ export class MindlyticsClient<
         header: this.headers,
       },
     })
+  }
+
+  async startListening(
+    onEvent?: MLEventHandler,
+    onError?: MLErrorHandler,
+  ) {
+    if (!onError) {
+      onError = { callback: async (error: Error) => {}, data: undefined }
+    }
+    if (!onEvent) {
+      onEvent = { callback: async (event: MLEvent) => {}, data: undefined }
+    }
+    // derive the ws endpoint from the base URL
+    let wsEndpoint = this.baseUrl.replace(/^http/, 'ws')
+    wsEndpoint = wsEndpoint.replace('//app/', '//wss/')
+    // To handle localhost
+    wsEndpoint = wsEndpoint.replace(':300', ':400')
+    wsEndpoint = wsEndpoint.replace('/bc/v1', '')
+
+    this.wsClient = new WebSocketClient(
+      this.client,
+      wsEndpoint,
+      onError,
+      onEvent,
+    )
+    return this.wsClient.startListening()
   }
 
   async startSession(params: StartSessionParams) {
