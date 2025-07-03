@@ -20,4 +20,55 @@ yarn test
 ```
 
 This will get the OpenAPI spec from `https://app.mindlytics.ai` and re-generate "packages/core/src/schema.gen.ts".
- 
+
+## Examples
+
+Create a ".env" file at the top of the repository that looks something like:
+
+```sh
+API_KEY=xxxx
+PROJECT_ID=yyyy
+BASE_URL=http://localhost:3000/bc/v1
+```
+
+Leave out `BASE_URL` if you are testing against the production Mindlytics backend service.  Otherwise use
+
+| Environment | BASE_URL |
+| ----------- | -------- |
+| local       | http://localhost:3000/bc/v1 |
+| staging     | https://app-staging.mindlytics.ai/bc/v1 |
+| production  | https://app.mindlytics.ai/bc/v1 |
+
+Then you can run
+
+```sh
+eval `cat .env` npx tsx examples/basic/index.ts 
+```
+
+You can run the Jupyter notebooks (and create new ones)
+
+```sh
+cd examples/jupyter
+eval `cat ../../.env` jupyter lab
+```
+
+## Installing Jupyter
+
+You may need to install Jupyter.  If you haven't already you must run
+
+```sh
+yarn
+yarn build
+```
+
+Then
+
+```sh
+pip install notebook
+```
+
+And you need to install the typescript kernel
+
+```sh
+npx tslab install
+```
