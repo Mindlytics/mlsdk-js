@@ -1,115 +1,18 @@
 import { AsyncLocalStorage } from 'node:async_hooks'
-import crypto from 'node:crypto'
 
-import { MindlyticsClient } from '@mindlytics/core'
-import type {
-  EndConversationParams,
-  EndSessionParams,
-  MindlyticsOptions,
-  StartConversationParams,
-  StartSessionParams as StartSessionParamsCore,
-  TrackConversationTurnParams,
-  TrackEventParams,
-  SessionUserAliasParams,
-  SessionUserIdentifyParams,
-} from '@mindlytics/core'
+import { Core } from '@mindlytics/core'
+import type { CoreOptions, UserIdentifyParams, UserAliasParams } from '@mindlytics/core'
+import type { SessionOptions } from './session.ts'
+import { Session } from './session.ts'
 
-export interface SessionOptions extends MindlyticsOptions {
-  sessionId?: string
-}
+export class Client<
+  TOptions extends CoreOptions = CoreOptions,
+> {
+  private core: Core<TOptions>
+  private session: Session | undefined
 
-export interface SessionCreateParams {
-  /**
-   * The Mindlytics project ID
-   */
-  projectId: string
-
-  /**
-   * The Mindlytics API key
-   */
-  apiKey: string
-
-  /**
-   * A custom session ID, will be generated if not provided
-   */
-  sessionId?: string
-
-  /**
-   * User ID, can also be set when starting a session
-   * Will start a new session if provided
-   */
-  userId?: string
-
-  /**
-   * Device ID, can also be set when starting a session
-   * Will start a new session if provided
-   */
-  deviceId?: string
-
-  /**
-   * The base URL of the Mindlytics API
-   */
-  baseUrl?: string
-
-  /**
-   * Whether to enable debug logging
-   */
-  debug?: boolean
-}
-
-export interface StartSessionParams
-  extends Omit<
-    StartSessionParamsCore,
-    'id' | 'type' | 'session_id' | 'device_id'
-  > {
-  userId?: string
-  deviceId?: string
-}
-
-/**
- * Usage:
- *
- * ```ts
- * const session = await Session.create({
- *   projectId: 'your-project-id',
- *   apiKey: 'your-api-key',
- * })
- * ```
- */
-export class Session {
-  private session_id: string | undefined = undefined
-
-  private conversation_id: string | undefined = undefined
-
-  private user_id: string | undefined = undefined
-
-  private device_id: string | undefined = undefined
-
-  public client: MindlyticsClient
-
-  constructor(private options: SessionOptions) {
-    const { sessionId, ...clientOptions } = options
-
-    if (sessionId) {
-      this.session_id = sessionId
-    }
-
-    this.client = new MindlyticsClient(clientOptions)
-  }
-
-  static async create(params: SessionCreateParams) {
-    const { userId, deviceId, ...sessionOptions } = params
-    const session = new Session(sessionOptions)
-
-    if (userId) {
-      session.user_id = userId
-    }
-
-    if (deviceId) {
-      session.device_id = deviceId
-    }
-
-    return session
+  constructor(options: TOptions) {
+    this.core = new Core(options)
   }
 
   static use() {
@@ -142,179 +45,24 @@ export class Session {
    * }
    */
   withContext<T>(fn: () => Promise<T>) {
-    return sessionContext.run(this, fn)
-  }
-
-  public get sessionId() {
-    return this.session_id
-  }
-
-  public get userId() {
-    return this.user_id
-  }
-
-  public get deviceId() {
-    return this.device_id
-  }
-
-  public async start(params: StartSessionParams = {}) {
-    const { userId, deviceId, ...rest } = params
-
-    if (this.session_id) {
-      console.warn('Session already started, skipping start')
-      return this.session_id
-    }
-
-    this.session_id = crypto.randomUUID()
-
-    if (userId) {
-      this.user_id = userId
-    }
-
-    if (deviceId) {
-      this.device_id = deviceId
-    }
-
-    if (!this.user_id && !this.device_id) {
-      throw new Error('User ID or device ID is required')
-    }
-
-    await this.client.startSession({
-      ...rest,
-      id: this.user_id,
-      device_id: this.device_id,
-      session_id: this.session_id,
-    })
-
-    return this.session_id
-  }
-
-  public async end(params: Omit<EndSessionParams, 'session_id'> = {}) {
-    if (!this.session_id) {
-      throw new Error('Session not started')
-    }
-
-    if (this.conversation_id) {
-      await this.endConversation({
-        attributes: params.attributes,
-        timestamp: params.timestamp,
-      })
-    }
-
-    await this.client.endSession({
-      ...params,
-      session_id: this.session_id,
-    })
-
-    this.session_id = undefined
-    this.conversation_id = undefined
-
-    await this.client.flush()
-  }
-
-  public async flush() {
-    return this.client.flush()
-  }
-
-  public async track(params: Omit<TrackEventParams, 'session_id' | 'type'>) {
-    if (!this.session_id) {
-      throw new Error('Session not started')
-    }
-
-    await this.client.trackEvent({
-      session_id: this.session_id,
-      ...params,
-    })
-  }
-
-  public async identify(
-    params: Omit<SessionUserIdentifyParams, 'session_id' | 'type'>,
-  ) {
-    if (!this.session_id) {
-      throw new Error('Session not started')
-    }
-
-    await this.client.sessionUserIdentify({
-      session_id: this.session_id,
-      ...params,
-    })
-  }
-
-  public async alias(params: Omit<SessionUserAliasParams, 'session_id' | 'type'>) {
-    if (!this.session_id) {
-      throw new Error('Session not started')
-    }
-
-    await this.client.sessionUserAlias({
-      session_id: this.session_id,
-      ...params,
-    })
-  }
-
-  public async startConversation(
-    params: Omit<StartConversationParams, 'session_id' | 'conversation_id'> & {
-      conversation_id?: string
-    } = {},
-  ) {
-    if (!this.session_id) {
-      throw new Error('Session not started')
-    }
-
-    if (params.conversation_id) {
-      this.conversation_id = params.conversation_id
+    if (this.session) {
+        return sessionContext.run(this.session, fn)
     } else {
-      this.conversation_id = crypto.randomUUID()
+        throw new Error('Mindlytics Session context is not set. Use `createSession` to create a session before using `withContext`.')
     }
-
-    await this.client.startConversation({
-      ...params,
-      session_id: this.session_id,
-      conversation_id: this.conversation_id,
-    })
   }
 
-  public async endConversation(
-    params: Omit<
-      EndConversationParams,
-      'session_id' | 'type' | 'conversation_id'
-    >,
-  ) {
-    if (!this.session_id) {
-      throw new Error('Session not started')
-    }
-
-    if (!this.conversation_id) {
-      throw new Error('Conversation not started')
-    }
-
-    await this.client.endConversation({
-      ...params,
-      session_id: this.session_id,
-      conversation_id: this.conversation_id,
-    })
-
-    this.conversation_id = undefined
+  createSession(options: SessionOptions) {
+    this.session = new Session(options, this.core)
+    return this.session
   }
 
-  public async trackConversationTurn(
-    params: Omit<
-      TrackConversationTurnParams,
-      'session_id' | 'type' | 'conversation_id'
-    >,
-  ) {
-    if (!this.session_id) {
-      throw new Error('Session not started')
-    }
+  async identifyUser(params: UserIdentifyParams) {
+    return this.core.identify(params)
+  }
 
-    if (!this.conversation_id) {
-      throw new Error('Conversation not started')
-    }
-
-    await this.client.trackConversationTurn({
-      ...params,
-      session_id: this.session_id,
-      conversation_id: this.conversation_id,
-    })
+  async aliasUser(params: UserAliasParams) {
+    return this.core.alias(params)
   }
 }
 

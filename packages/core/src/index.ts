@@ -9,7 +9,7 @@ export type { MLEventHandler } from './ws.ts'
 export type { MLEvent } from './ws.ts'
 export type { EventQueueError } from './queue.ts'
 
-export interface MindlyticsOptions {
+export interface CoreOptions {
   apiKey: string
   projectId: string
   baseUrl?: string
@@ -17,8 +17,8 @@ export interface MindlyticsOptions {
   queue?: QueueOptions
 }
 
-export class MindlyticsClient<
-  TOptions extends MindlyticsOptions = MindlyticsOptions,
+export class Core<
+  TOptions extends CoreOptions = CoreOptions,
 > {
   private baseUrl: string = 'https://app-staging.mindlytics.ai'
   private client: Client

@@ -1,26 +1,26 @@
-import { Session } from '@mindlytics/node-sdk'
+import crypto from 'node:crypto'
+import { Client } from '@mindlytics/node-sdk'
 
 async function main() {
-  const session = await Session.create({
+  const client = new Client({
     projectId: process.env.PROJECT_ID!,
     apiKey: process.env.API_KEY!,
     ...(process.env.BASE_URL && { baseUrl: process.env.BASE_URL }),
     debug: false,
   })
-
-  const sessionId = await session.start({
+  const session = client.createSession({
+    sessionId: crypto.randomUUID(),
+    conversationId: crypto.randomUUID(),
     userId: '123',
   })
 
-  console.log('Session ID:', sessionId)
-
-  await session.withContext(async () => {
+  await client.withContext(async () => {
     await toolCall()
   })
 }
 
 async function toolCall() {
-  const session = Session.use()
+  const session = Client.use()
 
   const sessionId = session.sessionId
 

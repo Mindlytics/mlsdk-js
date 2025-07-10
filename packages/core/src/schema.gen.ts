@@ -5332,15 +5332,17 @@ export interface paths {
                         session_id: string;
                         /** @description The timestamp of the event, defaults to "now" if not specified. */
                         timestamp?: string;
+                        /** @description The unique ID of the user */
+                        user_id?: string;
+                        /** @description The ID of the device, if applicable */
+                        device_id?: string;
+                        /** @description The unique ID of the user */
+                        id?: string;
                         /**
                          * @description The event that identifies a user
                          * @enum {string}
                          */
                         type: "identify";
-                        /** @description The unique ID of the user */
-                        id?: string;
-                        /** @description The ID of the device, if applicable */
-                        device_id?: string;
                         /** @description Any additional traits to be associated with the user (name, gender, etc) */
                         traits?: {
                             [key: string]: string | number | boolean;
@@ -5402,13 +5404,17 @@ export interface paths {
                         session_id: string;
                         /** @description The timestamp of the event, defaults to "now" if not specified. */
                         timestamp?: string;
+                        /** @description The unique ID of the user */
+                        user_id?: string;
+                        /** @description The ID of the device, if applicable */
+                        device_id?: string;
+                        /** @description The unique ID of the user */
+                        id?: string;
                         /**
                          * @description The event that aliases a user
                          * @enum {string}
                          */
                         type: "alias";
-                        /** @description The new ID of the user */
-                        id: string;
                         /** @description The previous ID of the user */
                         previous_id: string;
                     };
@@ -5468,15 +5474,17 @@ export interface paths {
                         session_id: string;
                         /** @description The timestamp of the event, defaults to "now" if not specified. */
                         timestamp?: string;
+                        /** @description The unique ID of the user */
+                        user_id?: string;
+                        /** @description The ID of the device, if applicable */
+                        device_id?: string;
+                        /** @description The unique ID of the user */
+                        id?: string;
                         /**
                          * @description The event that starts a session
                          * @enum {string}
                          */
                         type: "start_session";
-                        /** @description The unique ID of the user */
-                        id?: string;
-                        /** @description The ID of the device, if applicable */
-                        device_id?: string;
                         /** @description Any additional attributes to be associated with the session */
                         attributes?: {
                             [key: string]: string | number | boolean;
@@ -5538,6 +5546,10 @@ export interface paths {
                         session_id: string;
                         /** @description The timestamp of the event, defaults to "now" if not specified. */
                         timestamp?: string;
+                        /** @description The unique ID of the user */
+                        user_id?: string;
+                        /** @description The ID of the device, if applicable */
+                        device_id?: string;
                         /**
                          * @description The event that ends a session
                          * @enum {string}
@@ -5604,6 +5616,10 @@ export interface paths {
                         session_id: string;
                         /** @description The timestamp of the event, defaults to "now" if not specified. */
                         timestamp?: string;
+                        /** @description The unique ID of the user */
+                        user_id?: string;
+                        /** @description The ID of the device, if applicable */
+                        device_id?: string;
                         /**
                          * @description The event that tracks an arbitray event
                          * @enum {string}
@@ -5674,6 +5690,10 @@ export interface paths {
                         session_id: string;
                         /** @description The timestamp of the event, defaults to "now" if not specified. */
                         timestamp?: string;
+                        /** @description The unique ID of the user */
+                        user_id?: string;
+                        /** @description The ID of the device, if applicable */
+                        device_id?: string;
                         /**
                          * @description The event that tracks an arbitray event
                          * @enum {string}
@@ -5751,6 +5771,10 @@ export interface paths {
                         session_id: string;
                         /** @description The timestamp of the event, defaults to "now" if not specified. */
                         timestamp?: string;
+                        /** @description The unique ID of the user */
+                        user_id?: string;
+                        /** @description The ID of the device, if applicable */
+                        device_id?: string;
                         /**
                          * @description The event that tracks an arbitray event
                          * @enum {string}
@@ -5853,6 +5877,10 @@ export interface paths {
                         session_id: string;
                         /** @description The timestamp of the event, defaults to "now" if not specified. */
                         timestamp?: string;
+                        /** @description The unique ID of the user */
+                        user_id?: string;
+                        /** @description The ID of the device, if applicable */
+                        device_id?: string;
                         /**
                          * @description The event that tracks an arbitray event
                          * @enum {string}
@@ -5939,6 +5967,10 @@ export interface paths {
                         session_id: string;
                         /** @description The timestamp of the event, defaults to "now" if not specified. */
                         timestamp?: string;
+                        /** @description The unique ID of the user */
+                        user_id?: string;
+                        /** @description The ID of the device, if applicable */
+                        device_id?: string;
                         /**
                          * @description The event that tracks an arbitray event
                          * @enum {string}
@@ -6020,6 +6052,10 @@ export interface paths {
                         session_id: string;
                         /** @description The timestamp of the event, defaults to "now" if not specified. */
                         timestamp?: string;
+                        /** @description The unique ID of the user */
+                        user_id?: string;
+                        /** @description The ID of the device, if applicable */
+                        device_id?: string;
                         /**
                          * @description The event that tracks an arbitray event
                          * @enum {string}

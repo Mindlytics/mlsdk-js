@@ -1,4 +1,6 @@
-import { Session } from '@mindlytics/node-sdk'
+import crypto from 'node:crypto'
+
+import { Client } from '@mindlytics/node-sdk'
 import type { MLEventHandler, MLErrorHandler, MLEvent } from '@mindlytics/core'
 
 // Look for the 'Session Ended' event
@@ -8,7 +10,7 @@ let SessionEnded = false
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 async function main() {
-  const session = await Session.create({
+  const client = new Client({
     projectId: process.env.PROJECT_ID!,
     apiKey: process.env.API_KEY!,
     ...(process.env.BASE_URL && { baseUrl: process.env.BASE_URL }),
@@ -33,22 +35,22 @@ async function main() {
       console.error('WebSocket error:', error, data)
     },
   }
-  // This triggers the websocket behavior of the SDK
-  await session.client.startListening(onEvent, onError)
 
-  const sessionId = await session.start({
+  const session = client.createSession({
+    sessionId: crypto.randomUUID(),
+    conversationId: crypto.randomUUID(),
     userId: '123',
   })
 
-  console.log('Session ID:', sessionId)
+  await session.startListening(onEvent, onError)
 
-  await session.withContext(async () => {
+  await client.withContext(async () => {
     await toolCall()
   })
 }
 
 async function toolCall() {
-  const session = Session.use()
+  const session = Client.use()
 
   const sessionId = session.sessionId
 
