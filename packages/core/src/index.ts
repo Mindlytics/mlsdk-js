@@ -25,7 +25,7 @@ export interface CoreOptions {
 export class Core<
   TOptions extends CoreOptions = CoreOptions,
 > {
-  private baseUrl: string = 'https://app-staging.mindlytics.ai'
+  private baseUrl: string = 'https://app.mindlytics.ai'
   private client: Client
   private eventQueue: EventQueue
   private wsClient: WebSocketClient | null = null
