@@ -10,7 +10,7 @@ import {
 } from 'vitest'
 import { setupServer } from 'msw/node'
 import { http, HttpResponse } from 'msw'
-import { MindlyticsClient, type MindlyticsOptions } from '../src/index.ts'
+import { Core as MindlyticsClient, type CoreOptions as MindlyticsOptions } from '../src/index.ts'
 
 // Mock server setup
 const server = setupServer()

@@ -10,7 +10,7 @@ import {
 } from 'vitest'
 import { setupServer } from 'msw/node'
 import { http, HttpResponse } from 'msw'
-import { MindlyticsClient, type MindlyticsOptions } from '../src/index.ts'
+import { Core, type CoreOptions } from '../src/index.ts'
 
 // Mock server setup
 const server = setupServer()
@@ -25,17 +25,17 @@ describe('MindlyticsClient', () => {
     projectId: 'test-project-id',
     baseUrl: 'http://localhost:3000',
     debug: false,
-  } satisfies MindlyticsOptions
+  } satisfies CoreOptions
 
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
   describe('Errors', () => {
-    let client: MindlyticsClient
+    let client: Core
 
     beforeEach(() => {
-      client = new MindlyticsClient(defaultOptions)
+      client = new Core(defaultOptions)
     })
 
     it('429', async () => {

@@ -10,7 +10,8 @@ import {
 } from 'vitest'
 import { setupServer } from 'msw/node'
 import { http, HttpResponse } from 'msw'
-import { Session, useSession } from '../src/index.ts'
+import { Client, useSession } from '../src/index.ts'
+import { Session } from '../src/session.ts'
 
 // Mock server setup
 const server = setupServer()
@@ -33,40 +34,34 @@ describe('Session', () => {
 
   describe('constructor and creation', () => {
     it('should create session with default options', async () => {
-      const session = await Session.create({
+      const client = new Client({
         apiKey: 'test-key',
         projectId: 'test-project',
       })
-      expect(session).toBeInstanceOf(Session)
-      expect(session.sessionId).toBeUndefined()
-      expect(session.userId).toBeUndefined()
-    })
 
-    it('should create session with custom session ID', async () => {
-      const customSessionId = 'custom-session-123'
-      const session = new Session({
-        ...defaultOptions,
-        sessionId: customSessionId,
-      })
-      expect(session.sessionId).toBe(customSessionId)
-    })
+      expect(client).toBeInstanceOf(Client)
 
-    it('should initialize with all options', async () => {
-      const session = new Session({
-        ...defaultOptions,
+      const session = client.createSession({
         sessionId: 'test-session',
+        userId: 'user-123',
       })
       expect(session).toBeInstanceOf(Session)
       expect(session.sessionId).toBe('test-session')
+      expect(session.userId).toBe('user-123')
     })
+
   })
 
   describe('session management', () => {
     let session: Session
 
     beforeEach(async () => {
-      session = await Session.create(defaultOptions)
-
+      const client = new Client(defaultOptions)
+      session = client.createSession({
+        sessionId: 'test-session',
+        userId: 'user-123',
+        deviceId: 'device-123',
+      })
       // Mock the session endpoints
       server.use(
         http.post('http://localhost:3000/bc/v1/events/event/start-session', () => {
@@ -76,9 +71,6 @@ describe('Session', () => {
           return HttpResponse.json({ success: true })
         }),
         http.post('http://localhost:3000/bc/v1/events/event/identify', () => {
-          return HttpResponse.json({ success: true })
-        }),
-        http.post('http://localhost:3000/bc/v1/events/batch', () => {
           return HttpResponse.json({ success: true })
         }),
       )
@@ -99,7 +91,6 @@ describe('Session', () => {
         )
 
         await session.start({
-          deviceId: 'device-123',
           attributes: {
             platform: 'node',
             source: 'api',
@@ -141,7 +132,6 @@ describe('Session', () => {
         )
 
         await session.start({
-          userId: 'user-123',
           attributes: {
             platform: 'node',
           },
@@ -167,20 +157,6 @@ describe('Session', () => {
           id: 'user-123',
         })
       })
-
-      it('should generate session ID if not provided', async () => {
-        const sessionWithoutId = await Session.create({
-          ...defaultOptions,
-          sessionId: undefined,
-        })
-
-        await sessionWithoutId.start({
-          userId: 'user-123',
-          attributes: { platform: 'node' },
-        })
-
-        expect(sessionWithoutId.sessionId).toMatch(/^[a-f0-9-]{36}$/)
-      })
     })
   })
 
@@ -188,7 +164,11 @@ describe('Session', () => {
     let session: Session
 
     beforeEach(async () => {
-      session = await Session.create(defaultOptions)
+        const client = new Client(defaultOptions)
+        session = client.createSession({
+          sessionId: 'test-session',
+          deviceId: 'device-321',
+        })
       server.use(
         http.post(
           'http://localhost:3000/bc/v1/events/event/start-session',
@@ -197,7 +177,7 @@ describe('Session', () => {
           },
         ),
       )
-      await session.start({ deviceId: 'device-321' })
+      await session.start()
     })
 
     describe('end', () => {
@@ -214,14 +194,9 @@ describe('Session', () => {
           ),
         )
 
-        expect(session.sessionId).toMatch(/^[a-f0-9-]{36}$/)
-        expect(session.sessionId).toBe(session.sessionId)
         const sessionId = session.sessionId
 
         await session.end()
-
-        expect(session.sessionId).toBeUndefined()
-
         await session.flush()
 
         expect(requestBody).toMatchObject({
@@ -338,7 +313,11 @@ describe('Session', () => {
     let session: Session
 
     beforeEach(async () => {
-      session = await Session.create(defaultOptions)
+        const client = new Client(defaultOptions)
+      session = await client.createSession({
+        sessionId: 'test-session',
+        deviceId: 'device-321',
+      })
       server.use(
         http.post(
           'http://localhost:3000/bc/v1/events/event/start-session',
@@ -368,7 +347,7 @@ describe('Session', () => {
           return HttpResponse.json({ success: true })
         }),
       )
-      await session.start({ deviceId: 'device-321' })
+      await session.start()
     })
 
     describe('startConversation', () => {
@@ -412,7 +391,11 @@ describe('Session', () => {
   describe('conversation management', () => {
     let session: Session
     beforeEach(async () => {
-      session = await Session.create(defaultOptions)
+        const client = new Client(defaultOptions)
+      session = client.createSession({
+        sessionId: 'test-session',
+        deviceId: 'device-321',
+      })
       server.use(
         http.post(
           'http://localhost:3000/bc/v1/events/event/start-session',
@@ -442,7 +425,7 @@ describe('Session', () => {
           return HttpResponse.json({ success: true })
         }),
       )
-      await session.start({ deviceId: 'device-321' })
+      await session.start()
       await session.startConversation({
         conversation_id: 'conv-123',
       })
@@ -462,7 +445,9 @@ describe('Session', () => {
           ),
         )
 
-        await session.endConversation({})
+        await session.endConversation({
+          conversation_id: 'conv-123',
+        })
 
         await session.flush()
 
@@ -490,6 +475,7 @@ describe('Session', () => {
         )
 
         await session.trackConversationTurn({
+          conversation_id: 'conv-123',
           properties: {
             assistant: 'Hello! How can I help you?',
             user: 'Hi there!',
@@ -509,10 +495,15 @@ describe('Session', () => {
   })
 
   describe('AsyncLocalStorage context', () => {
+    let client: Client
     let session: Session
-
     beforeEach(async () => {
-      session = await Session.create(defaultOptions)
+      client = new Client(defaultOptions)
+      session = client.createSession({
+        sessionId: 'test-session',
+        userId: 'user-123',
+        deviceId: 'device-123',
+      })
 
       server.use(
         http.post('http://localhost:3000/bc/v1/events/event/track', () => {
@@ -528,50 +519,57 @@ describe('Session', () => {
       it('should provide session context within callback', async () => {
         let sessionInCallback: Session | null = null
 
-        await session.withContext(async () => {
+        await client.withContext(async () => {
           sessionInCallback = useSession()
 
-          expect(sessionInCallback.sessionId).toBe(session.sessionId)
-          expect(sessionInCallback.userId).toBe(session.userId)
+          expect(sessionInCallback.sessionId).toBe('test-session')
+          expect(sessionInCallback.userId).toBe('user-123')
         })
 
         expect(sessionInCallback).not.toBeNull()
-        expect(sessionInCallback!.sessionId).toBe(session.sessionId)
+        expect(sessionInCallback!.sessionId).toBe('test-session')
       })
 
       it('should maintain context across async operations', async () => {
-        await session.withContext(async () => {
+        await client.withContext(async () => {
           // Simulate async operation
           await new Promise((resolve) => setTimeout(resolve, 10))
 
           const contextSession = useSession()
-          expect(contextSession.sessionId).toBe(session.sessionId)
+          expect(contextSession.sessionId).toBe('test-session')
 
           // Another async operation
           await Promise.resolve()
 
           const contextSession2 = useSession()
-          expect(contextSession2.sessionId).toBe(session.sessionId)
+          expect(contextSession2.sessionId).toBe('test-session')
         })
       })
 
       it('should isolate contexts in concurrent operations', async () => {
-        const session1 = new Session({
+        const client1 = new Client({
           ...defaultOptions,
-          sessionId: 'session-1',
         })
-
-        const session2 = new Session({
+        const session1 = client1.createSession({
+          sessionId: 'session-1',
+          userId: 'user-1',
+          deviceId: 'device-1',
+        })
+        const client2 = new Client({
           ...defaultOptions,
+        })
+        const session2 = client2.createSession({
           sessionId: 'session-2',
+          userId: 'user-2',
+          deviceId: 'device-2',
         })
 
         const results = await Promise.all([
-          session1.withContext(async () => {
+          client1.withContext(async () => {
             await new Promise((resolve) => setTimeout(resolve, 20))
             return useSession().sessionId
           }),
-          session2.withContext(async () => {
+          client2.withContext(async () => {
             await new Promise((resolve) => setTimeout(resolve, 10))
             return useSession().sessionId
           }),
@@ -582,23 +580,29 @@ describe('Session', () => {
       })
 
       it('should work with nested contexts', async () => {
-        const outerSession = new Session({
+        const outerClient = new Client({
           ...defaultOptions,
+        })
+        const outerSession = outerClient.createSession({
           sessionId: 'outer-session',
+            userId: 'outer-user',
         })
 
-        const innerSession = new Session({
+        const innerClient = new Client({
           ...defaultOptions,
+        })
+        const innerSession = innerClient.createSession({
           sessionId: 'inner-session',
+          userId: 'inner-user',
         })
 
         let outerSessionId: string | undefined = undefined
         let innerSessionId: string | undefined = undefined
 
-        await outerSession.withContext(async () => {
+        await outerClient.withContext(async () => {
           outerSessionId = useSession().sessionId
 
-          await innerSession.withContext(async () => {
+          await innerClient.withContext(async () => {
             innerSessionId = useSession().sessionId
           })
 
@@ -612,7 +616,7 @@ describe('Session', () => {
 
       it('should handle errors in context callback', async () => {
         await expect(
-          session.withContext(async () => {
+          client.withContext(async () => {
             throw new Error('Test error')
           }),
         ).rejects.toThrow('Test error')
@@ -624,14 +628,17 @@ describe('Session', () => {
       it('should work with Express-like middleware pattern', async () => {
         // Simulate Express middleware
         const simulateRequest = async (sessionId: string) => {
-          const requestSession = new Session({
+          const requestClient = new Client({
             ...defaultOptions,
+          })
+          const requestSession = requestClient.createSession({
             sessionId,
+            userId: 'req-user',
           })
 
-          return requestSession.withContext(async () => {
+          return requestClient.withContext(async () => {
             // Simulate controller logic
-            await requestSession.track({
+            await useSession().track({
               event: 'Page View',
               properties: { page: '/dashboard' },
             })
@@ -665,7 +672,7 @@ describe('Session', () => {
       })
 
       it('should return session when used within context', async () => {
-        await session.withContext(async () => {
+        await client.withContext(async () => {
           const contextSession = useSession()
           expect(contextSession).toBe(session)
           expect(contextSession.sessionId).toBe(session.sessionId)
@@ -675,9 +682,9 @@ describe('Session', () => {
 
     describe('Session.use', () => {
       it('should be alias for useSession', async () => {
-        await session.withContext(async () => {
+        await client.withContext(async () => {
           const contextSession1 = useSession()
-          const contextSession2 = Session.use()
+          const contextSession2 = Client.use()
 
           expect(contextSession1).toBe(contextSession2)
           expect(contextSession1.sessionId).toBe(session.sessionId)
@@ -687,10 +694,18 @@ describe('Session', () => {
   })
 
   describe('integration with tracking methods', () => {
+    let client: Client
     let session: Session
 
     beforeEach(async () => {
-      session = await Session.create(defaultOptions)
+      client = new Client({
+        ...defaultOptions,
+      })
+      session = await client.createSession({
+        sessionId: 'test-session',
+        userId: 'user-123',
+        deviceId: 'device-123',
+      })
       server.use(
         http.post('http://localhost:3000/bc/v1/events/event/start-session', () => {
           return HttpResponse.json({ success: true })
@@ -702,7 +717,6 @@ describe('Session', () => {
           return HttpResponse.json({ success: true })
         }),
       )
-      await session.start({ deviceId: 'device-321' })
     })
 
     it('should track events using session context', async () => {
@@ -718,7 +732,7 @@ describe('Session', () => {
         ),
       )
 
-      await session.withContext(async () => {
+      await client.withContext(async () => {
         const contextSession = useSession()
 
         await contextSession.track({

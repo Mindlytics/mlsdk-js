@@ -1,7 +1,9 @@
 import { Core } from '@mindlytics/core'
 import type {
   EndConversationParams,
+  StartConversationParams,
   EndSessionParams,
+  StartSessionParams,
   TrackConversationTurnParams,
   TrackConversationUsageParams,
   TrackConversationFunctionParams,
@@ -90,6 +92,15 @@ export class Session {
     return this.conversation_id
   }
 
+  public async start(params: Omit<StartSessionParams, 'session_id'> = {}) {
+    await this.core.startSession({
+      session_id: this.session_id,
+      id: this.user_id,
+      device_id: this.device_id,
+      ...params,
+    })
+  }
+
   public async end(params: Omit<EndSessionParams, 'session_id'> = {}) {
     await this.core.endSession({
       user_id: this.user_id,
@@ -135,8 +146,34 @@ export class Session {
     })
   }
 
+  public async startConversation(
+    params: Omit<
+      StartConversationParams,
+      'session_id' | 'type' | 'conversation_id'
+    > & { conversation_id?: string },
+  ) {
+    if (!params.conversation_id) {
+      if (this.conversation_id) {
+        params.conversation_id = this.conversation_id
+      }
+    }
+    if (!params.conversation_id) {
+      throw new Error('Conversation id is required to start a conversation')
+    }
+    await this.core.startConversation({
+      session_id: this.session_id,
+      user_id: this.user_id,
+      device_id: this.device_id,
+      ...params,
+      conversation_id: params.conversation_id as string,
+    })
+  }
+
   public async endConversation(
-    params: Omit<EndConversationParams, 'session_id' | 'type'>,
+    params: Omit<
+      EndConversationParams,
+      'session_id' | 'type' | 'conversation_id'
+    > & { conversation_id?: string },
   ) {
     if (!params.conversation_id) {
       if (this.conversation_id) {
@@ -151,11 +188,15 @@ export class Session {
       user_id: this.user_id,
       device_id: this.device_id,
       ...params,
+      conversation_id: params.conversation_id as string,
     })
   }
 
   public async trackConversationTurn(
-    params: Omit<TrackConversationTurnParams, 'session_id' | 'type'>,
+    params: Omit<
+      TrackConversationTurnParams,
+      'session_id' | 'type' | 'conversation_id'
+    > & { conversation_id?: string },
   ) {
     if (!params.conversation_id) {
       if (this.conversation_id) {
@@ -172,11 +213,15 @@ export class Session {
       user_id: this.user_id,
       device_id: this.device_id,
       ...params,
+      conversation_id: params.conversation_id as string,
     })
   }
 
   public async trackConversationUsage(
-    params: Omit<TrackConversationUsageParams, 'session_id' | 'type'>,
+    params: Omit<
+      TrackConversationUsageParams,
+      'session_id' | 'type' | 'conversation_id'
+    > & { conversation_id?: string },
   ) {
     if (!params.conversation_id) {
       if (this.conversation_id) {
@@ -193,11 +238,14 @@ export class Session {
       user_id: this.user_id,
       device_id: this.device_id,
       ...params,
+      conversation_id: params.conversation_id as string,
     })
   }
 
   public async trackConversationFunction(
-    params: Omit<TrackConversationFunctionParams, 'session_id' | 'type'>,
+    params: Omit<TrackConversationFunctionParams, 'session_id' | 'type'> & {
+      conversation_id?: string
+    },
   ) {
     if (!params.conversation_id) {
       if (this.conversation_id) {
@@ -214,6 +262,7 @@ export class Session {
       user_id: this.user_id,
       device_id: this.device_id,
       ...params,
+      conversation_id: params.conversation_id as string,
     })
   }
 }
