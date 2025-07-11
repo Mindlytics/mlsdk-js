@@ -3,6 +3,8 @@ import type {
   EndConversationParams,
   EndSessionParams,
   TrackConversationTurnParams,
+  TrackConversationUsageParams,
+  TrackConversationFunctionParams,
   TrackEventParams,
   SessionUserAliasParams,
   SessionUserIdentifyParams,
@@ -31,7 +33,6 @@ export interface SessionOptions {
    * Device ID, if known.  One of either userId or deviceId must be provided.
    */
   deviceId?: string
-
 }
 
 export class Session {
@@ -49,7 +50,7 @@ export class Session {
     const { sessionId, conversationId, userId, deviceId } = options
 
     this.session_id = sessionId
-    if ( conversationId ) {
+    if (conversationId) {
       this.conversation_id = conversationId
     }
     if (userId) {
@@ -118,12 +119,14 @@ export class Session {
     await this.core.sessionUserIdentify({
       session_id: this.session_id,
       user_id: this.user_id,
-      device_id: this.device_id,  
+      device_id: this.device_id,
       ...params,
     })
   }
 
-  public async alias(params: Omit<SessionUserAliasParams, 'session_id' | 'type'>) {
+  public async alias(
+    params: Omit<SessionUserAliasParams, 'session_id' | 'type'>,
+  ) {
     await this.core.sessionUserAlias({
       session_id: this.session_id,
       user_id: this.user_id,
@@ -133,15 +136,12 @@ export class Session {
   }
 
   public async endConversation(
-    params: Omit<
-      EndConversationParams,
-      'session_id' | 'type' 
-    >,
+    params: Omit<EndConversationParams, 'session_id' | 'type'>,
   ) {
     if (!params.conversation_id) {
-        if (this.conversation_id) {
-            params.conversation_id = this.conversation_id
-        }
+      if (this.conversation_id) {
+        params.conversation_id = this.conversation_id
+      }
     }
     if (!params.conversation_id) {
       throw new Error('Conversation id is required to end a conversation')
@@ -155,25 +155,65 @@ export class Session {
   }
 
   public async trackConversationTurn(
-    params: Omit<
-      TrackConversationTurnParams,
-      'session_id' | 'type'
-    >,
+    params: Omit<TrackConversationTurnParams, 'session_id' | 'type'>,
   ) {
     if (!params.conversation_id) {
-        if (this.conversation_id) {
-            params.conversation_id = this.conversation_id
-        }
+      if (this.conversation_id) {
+        params.conversation_id = this.conversation_id
+      }
     }
     if (!params.conversation_id) {
-      throw new Error('Conversation id is required to end a conversation')
+      throw new Error(
+        'Conversation id is required to track a conversation turn',
+      )
     }
     await this.core.trackConversationTurn({
       session_id: this.session_id,
-        user_id: this.user_id,
-        device_id: this.device_id,
+      user_id: this.user_id,
+      device_id: this.device_id,
+      ...params,
+    })
+  }
+
+  public async trackConversationUsage(
+    params: Omit<TrackConversationUsageParams, 'session_id' | 'type'>,
+  ) {
+    if (!params.conversation_id) {
+      if (this.conversation_id) {
+        params.conversation_id = this.conversation_id
+      }
+    }
+    if (!params.conversation_id) {
+      throw new Error(
+        'Conversation id is required to track conversation turn usage',
+      )
+    }
+    await this.core.trackConversationUsage({
+      session_id: this.session_id,
+      user_id: this.user_id,
+      device_id: this.device_id,
+      ...params,
+    })
+  }
+
+  public async trackConversationFunction(
+    params: Omit<TrackConversationFunctionParams, 'session_id' | 'type'>,
+  ) {
+    if (!params.conversation_id) {
+      if (this.conversation_id) {
+        params.conversation_id = this.conversation_id
+      }
+    }
+    if (!params.conversation_id) {
+      throw new Error(
+        'Conversation id is required to track a conversation function',
+      )
+    }
+    await this.core.trackConversationFunction({
+      session_id: this.session_id,
+      user_id: this.user_id,
+      device_id: this.device_id,
       ...params,
     })
   }
 }
-

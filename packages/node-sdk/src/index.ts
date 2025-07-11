@@ -26,22 +26,18 @@ export class Client<TOptions extends CoreOptions = CoreOptions> {
    *
    * ```ts
    * function GET() {
-   *   const session = await Session.create({
+   *   const client = new Client({
    *     projectId: 'your-project-id',
    *     apiKey: 'your-api-key',
    *   })
    *
-   *   session.start({
-   *     user_id: '123',
-   *   })
-   *
-   *   session.withContext(() => {
+   *   client.withContext(() => {
    *     someMethod()
    *   })
    * }
    *
    * function someMethod() {
-   *   const session = Session.use() // or useSession()
+   *   const session = Client.use()
    *
    *   console.log(session.user_id) // 123
    * }

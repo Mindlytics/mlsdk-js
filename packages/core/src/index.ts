@@ -221,6 +221,14 @@ export class Core<
     })
   }
 
+  async trackConversationFunction(params: TrackConversationFunctionParams) {
+    return this.makeRequest('/bc/v1/events/event/conversation-function', {
+      type: 'track',
+      event: 'Conversation Function',
+      ...params,
+    })
+  }
+
   async identify(params: UserIdentifyParams) {
     return this.client.POST('/bc/v1/user/identify', {
       body: params,
@@ -268,6 +276,10 @@ export type TrackConversationTurnParams = Omit<
 >
 export type TrackConversationUsageParams = Omit<
   paths['/bc/v1/events/event/conversation-usage']['post']['requestBody']['content']['application/json'],
+  'type' | 'event'
+>
+export type TrackConversationFunctionParams = Omit<
+  paths['/bc/v1/events/event/conversation-function']['post']['requestBody']['content']['application/json'],
   'type' | 'event'
 >
 export type UserIdentifyParams = paths['/bc/v1/user/identify']['post']['requestBody']['content']['application/json']

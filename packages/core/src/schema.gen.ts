@@ -6062,23 +6062,24 @@ export interface paths {
                          */
                         type: "track";
                         /**
-                         * @description The event that represents a usage in a conversation
+                         * @description The event that represents a function in a conversation
                          * @enum {string}
                          */
-                        event: "Conversation Usage";
+                        event: "Conversation Function";
                         /** @description The ID of the conversation */
                         conversation_id: string;
-                        /** @description Properties of a usage event.  Either model and tokens (cost will be calculated if model is known), or cost directly. */
+                        /** @description Properties of a function event.  Allows additional keys. */
                         properties: {
-                            /** @description The model name */
-                            model: string;
-                            /** @description The number of tokens in the prompt */
-                            prompt_tokens: number;
-                            /** @description The number of tokens in the completion */
-                            completion_tokens: number;
-                        } | {
-                            /** @description The cost of the event */
-                            cost: number;
+                            /** @description The name of the function */
+                            name: string;
+                            /** @description The arguments of the function in JSON format */
+                            args?: string;
+                            /** @description The result of the function execution in JSON format */
+                            result?: string;
+                            /** @description The runtime of the function in milliseconds */
+                            runtime?: number;
+                        } & {
+                            [key: string]: string | number | boolean;
                         };
                     };
                 };
