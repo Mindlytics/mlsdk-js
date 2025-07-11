@@ -9,6 +9,14 @@ yarn test
 
 And the unit tests should pass.
 
+You can run a single test like this:
+
+```sh
+npx vitest packages/node-sdk/test/node.test.ts 
+```
+
+> Unit tests do not hit a real Mindlytics backend.  The backend is mocked with `msw` library.
+
 ## Refreshing the API
 
 The code base uses the Mindlytics OpenAPI spec to generate Typescript types and fetch apis.  If significant changes are made to the Mindlytics endpoints, then you can integrate these changes by running
