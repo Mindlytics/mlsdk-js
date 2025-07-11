@@ -4,6 +4,11 @@ import { EventQueue, QueueOptions, EventQueueError } from './queue.ts'
 import type { EventPaths } from './schema.ts'
 import { WebSocketClient, MLEventHandler, MLErrorHandler, MLEvent } from './ws.ts'
 
+// Utility type to extract path strings with a given HTTP method from OpenAPI paths
+type PathsWithMethod<TPaths, TMethod extends string> = {
+  [K in keyof TPaths]: TMethod extends keyof TPaths[K] ? K : never
+}[keyof TPaths] & string;
+
 export type { MLErrorHandler } from './ws.ts'
 export type { MLEventHandler } from './ws.ts'
 export type { MLEvent } from './ws.ts'
@@ -100,6 +105,28 @@ export class Core<
         header: this.headers,
       },
     })
+  }
+
+  async dbGET(params: {
+    collection: "users" | "events" | "sessions" | "conversations" | "messages" | "orgkeys" | "organizations" | "apps",
+    op: "find" | "findOne",
+    query: any
+  }): Promise<any> {
+    if (!params.collection || !params.op) {
+      throw new Error('Collection and operation must be specified')
+    }
+    return this.client.GET(
+      `/bc/v1/db/{collection}/{op}`,
+      {
+        params: {
+          query: params.query,
+          path: {
+            collection: params.collection,
+            op: params.op,
+          }
+        },
+      }
+    )
   }
 
   async startListening(

@@ -1,13 +1,15 @@
 import { AsyncLocalStorage } from 'node:async_hooks'
 
 import { Core } from '@mindlytics/core'
-import type { CoreOptions, UserIdentifyParams, UserAliasParams } from '@mindlytics/core'
+import type {
+  CoreOptions,
+  UserIdentifyParams,
+  UserAliasParams,
+} from '@mindlytics/core'
 import type { SessionOptions } from './session.ts'
 import { Session } from './session.ts'
 
-export class Client<
-  TOptions extends CoreOptions = CoreOptions,
-> {
+export class Client<TOptions extends CoreOptions = CoreOptions> {
   private core: Core<TOptions>
   private session: Session | undefined
 
@@ -46,9 +48,11 @@ export class Client<
    */
   withContext<T>(fn: () => Promise<T>) {
     if (this.session) {
-        return sessionContext.run(this.session, fn)
+      return sessionContext.run(this.session, fn)
     } else {
-        throw new Error('Mindlytics Session context is not set. Use `createSession` to create a session before using `withContext`.')
+      throw new Error(
+        'Mindlytics Session context is not set. Use `createSession` to create a session before using `withContext`.',
+      )
     }
   }
 
@@ -63,6 +67,56 @@ export class Client<
 
   async aliasUser(params: UserAliasParams) {
     return this.core.alias(params)
+  }
+
+  async dbGET(params: {
+    collection:
+      | 'users'
+      | 'events'
+      | 'sessions'
+      | 'conversations'
+      | 'messages'
+      | 'orgkeys'
+      | 'organizations'
+      | 'apps'
+    op: 'find' | 'findOne'
+    query?: {
+      filter?: Record<string, any>
+      projection?: Record<string, any>
+      sort?: Record<string, any>
+      skip?: number
+      limit?: number
+      include?: string | Record<string, any> | Array<string | Record<string, any>>
+    }
+  }): Promise<any> {
+    let coreParams = {
+      collection: params.collection,
+      op: params.op,
+      query: {} as Record<string, any>,
+    }
+    try {
+      if (params.query) {
+        if (params.query.filter) {
+          coreParams.query.filter = JSON.stringify(params.query.filter)
+        }
+        if (params.query.projection) {
+          coreParams.query.projection = JSON.stringify(params.query.projection)
+        }
+        if (params.query.sort) {
+          coreParams.query.sort = JSON.stringify(params.query.sort)
+        }
+        if (params.query.include) {
+          if (Array.isArray(params.query.include)) {
+            coreParams.query.include = JSON.stringify(params.query.include)
+          } else {
+            coreParams.query.include = JSON.stringify([params.query.include])
+          }
+        }
+      }
+    } catch (error) {
+      throw new Error(`Invalid query parameters: ${error}`)
+    }
+    return this.core.dbGET(coreParams)
   }
 }
 
