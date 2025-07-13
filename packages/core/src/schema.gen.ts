@@ -5898,7 +5898,7 @@ export interface paths {
                             user: string;
                             assistant: string;
                             /** @description The ID of the assistant, if applicable */
-                            assisant_id?: string;
+                            assistant_id?: string;
                             /** @description The model name */
                             model?: string;
                             /** @description The number of tokens in the prompt */

@@ -15,8 +15,8 @@ export type { MLEvent } from './ws.ts'
 export type { EventQueueError } from './queue.ts'
 
 export interface CoreOptions {
-  apiKey: string
-  projectId: string
+  apiKey?: string
+  projectId?: string
   baseUrl?: string
   debug?: boolean
   queue?: QueueOptions
@@ -25,14 +25,26 @@ export interface CoreOptions {
 export class Core<
   TOptions extends CoreOptions = CoreOptions,
 > {
-  private baseUrl: string = 'https://app.mindlytics.ai'
+  private baseUrl: string = process.env.MLSDK_SERVER_BASE || 'https://app.mindlytics.ai'
   private client: Client
   private eventQueue: EventQueue
   private wsClient: WebSocketClient | null = null
+  private apiKey: string | undefined
+  private projectId: string | undefined
 
   constructor(private options: TOptions) {
     if (options.baseUrl) {
       this.baseUrl = options.baseUrl
+    }
+
+    this.apiKey = options.apiKey || process.env.MLSDK_API_KEY
+    this.projectId = options.projectId || process.env.MLSDK_PROJECT_ID
+
+    if (!this.apiKey) {
+      throw new Error('API key is required. Set MLSDK_API_KEY environment variable or pass it in options.')
+    }
+    if (!this.projectId) {
+      throw new Error('Project ID is required. Set MLSDK_PROJECT_ID environment variable or pass it in options.')
     }
 
     this.client = createClient({
@@ -72,8 +84,8 @@ export class Core<
 
   private get headers() {
     return {
-      Authorization: this.options.apiKey,
-      'x-app-id': this.options.projectId,
+      Authorization: this.apiKey,
+      'x-app-id': this.projectId,
     }
   }
 
