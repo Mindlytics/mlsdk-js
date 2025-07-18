@@ -14,9 +14,10 @@
     "packages/*"
   ],
   "dependencies": {
+    "@changesets/cli": "^2.29.5",
     "msw": "^2.8.7",
     "typescript": "^5.8.3",
     "vitest": "^3.1.4"
   },
-  "packageManager": "yarn@4.3.1"
+  "packageManager": "yarn@4.9.2"
 }
