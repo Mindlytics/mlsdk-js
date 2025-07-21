@@ -2,6 +2,9 @@
   "name": "@mindlytics/core",
   "version": "0.0.1",
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "generate": "openapi-typescript https://app.mindlytics.ai/openapi.json -o src/schema.gen.ts",
     "build": "tsc"
