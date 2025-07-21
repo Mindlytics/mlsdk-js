@@ -80,3 +80,15 @@ And you need to install the typescript kernel
 ```sh
 npx tslab install
 ```
+
+## Publishing changes to NPM
+
+We use "changesets" (see ./.changeset) to manage publishing to npm.  The procedure is:
+
+1. Create a new bug or feature branch
+2. Make your changes and test them
+3. Run "yarn changeset" and answer some questions
+4. Merge this branch into main
+5. Merge main into "prod" and push
+6. This will create a special PR.  Merge this into main using the github console.
+7. Pull main and merge this into prod.  The publish should happen.
