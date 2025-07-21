@@ -7,7 +7,8 @@
     "build:core": "yarn workspace @mindlytics/core build",
     "build:node-sdk": "yarn workspace @mindlytics/node-sdk build",
     "generate:api:schema": "yarn workspace @mindlytics/core generate",
-    "test": "vitest"
+    "test": "vitest",
+    "release": "yarn build && yarn changeset publish"
   },
   "workspaces": [
     "examples/*",
