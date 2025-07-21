@@ -25,6 +25,9 @@ jobs:
         with:
           node-version: 20.x
 
+      - name: Corepack Enable
+        run: corepack enable
+
       - name: Install Dependencies
         run: yarn
 
