@@ -1,6 +1,6 @@
 {
   "name": "@mindlytics/core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "scripts": {
     "generate": "openapi-typescript https://app.mindlytics.ai/openapi.json -o src/schema.gen.ts",
